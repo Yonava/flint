@@ -95,6 +95,7 @@ import importEmptyBlocks from "./rules/importEmptyBlocks.ts";
 import importTypeSideEffects from "./rules/importTypeSideEffects.ts";
 import instanceOfArrays from "./rules/instanceOfArrays.ts";
 import isNaNComparisons from "./rules/isNaNComparisons.ts";
+import misleadingVoidExpressions from "./rules/misleadingVoidExpressions.ts";
 import multilineAmbiguities from "./rules/multilineAmbiguities.ts";
 import namespaceDeclarations from "./rules/namespaceDeclarations.ts";
 import negativeZeroComparisons from "./rules/negativeZeroComparisons.ts";
@@ -229,6 +230,7 @@ export const ts = createPlugin({
 		importTypeSideEffects,
 		instanceOfArrays,
 		isNaNComparisons,
+		misleadingVoidExpressions,
 		multilineAmbiguities,
 		namespaceDeclarations,
 		negativeZeroComparisons,
