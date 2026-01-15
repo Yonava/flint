@@ -11234,7 +11234,9 @@
 		],
 		"flint": {
 			"name": "importTypeSideEffects",
-			"plugin": "ts"
+			"plugin": "ts",
+			"preset": "logical",
+			"status": "implemented"
 		},
 		"oxlint": [
 			{

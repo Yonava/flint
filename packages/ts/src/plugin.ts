@@ -92,6 +92,7 @@ import globalAssignments from "./rules/globalAssignments.ts";
 import globalObjectCalls from "./rules/globalObjectCalls.ts";
 import impliedEvals from "./rules/impliedEvals.ts";
 import importEmptyBlocks from "./rules/importEmptyBlocks.ts";
+import importTypeSideEffects from "./rules/importTypeSideEffects.ts";
 import instanceOfArrays from "./rules/instanceOfArrays.ts";
 import isNaNComparisons from "./rules/isNaNComparisons.ts";
 import multilineAmbiguities from "./rules/multilineAmbiguities.ts";
@@ -225,6 +226,7 @@ export const ts = createPlugin({
 		globalObjectCalls,
 		impliedEvals,
 		importEmptyBlocks,
+		importTypeSideEffects,
 		instanceOfArrays,
 		isNaNComparisons,
 		multilineAmbiguities,
