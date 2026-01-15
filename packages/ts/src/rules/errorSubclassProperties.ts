@@ -5,6 +5,7 @@ import { getTSNodeRange } from "../getTSNodeRange.ts";
 import { typescriptLanguage } from "../language.ts";
 import type * as AST from "../types/ast.ts";
 import { ruleCreator } from "./ruleCreator.ts";
+import { isErrorSubclass } from "./utils/isErrorSubclass.ts";
 
 function analyzeConstructor(node: AST.ClassDeclaration) {
 	let constructor: AST.ConstructorDeclaration | undefined;
@@ -95,18 +96,6 @@ function analyzeConstructor(node: AST.ClassDeclaration) {
 	};
 }
 
-function isErrorSubclass(node: AST.ClassDeclaration) {
-	return node.heritageClauses?.some(
-		(clause) =>
-			clause.token === SyntaxKind.ExtendsKeyword &&
-			clause.types.some(
-				(type) =>
-					ts.isIdentifier(type.expression) &&
-					type.expression.text.endsWith("Error"),
-			),
-	);
-}
-
 function isValidErrorClassName(
 	name: string | undefined,
 ): name is `${string}Error` {
@@ -175,8 +164,8 @@ export default ruleCreator.createRule(typescriptLanguage, {
 	setup(context) {
 		return {
 			visitors: {
-				ClassDeclaration: (node, { sourceFile }) => {
-					if (!isErrorSubclass(node)) {
+				ClassDeclaration: (node, { sourceFile, typeChecker }) => {
+					if (!isErrorSubclass(node, typeChecker)) {
 						return;
 					}
 
