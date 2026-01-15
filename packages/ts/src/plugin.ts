@@ -79,6 +79,7 @@ import enumMemberLiterals from "./rules/enumMemberLiterals.ts";
 import enumValueConsistency from "./rules/enumValueConsistency.ts";
 import enumValueDuplicates from "./rules/enumValueDuplicates.ts";
 import equalityOperatorNegations from "./rules/equalityOperatorNegations.ts";
+import errorMessages from "./rules/errorMessages.ts";
 import evolvingVariableTypes from "./rules/evolvingVariableTypes.ts";
 import exceptionAssignments from "./rules/exceptionAssignments.ts";
 import fetchMethodBodies from "./rules/fetchMethodBodies.ts";
@@ -221,6 +222,7 @@ export const ts = createPlugin({
 		enumValueConsistency,
 		enumValueDuplicates,
 		equalityOperatorNegations,
+		errorMessages,
 		evolvingVariableTypes,
 		exceptionAssignments,
 		fetchMethodBodies,
