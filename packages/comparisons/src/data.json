@@ -21548,7 +21548,8 @@
 		"flint": {
 			"name": "emptySequenceEntries",
 			"plugin": "yaml",
-			"preset": "logical"
+			"preset": "logical",
+			"status": "implemented"
 		}
 	},
 	{
