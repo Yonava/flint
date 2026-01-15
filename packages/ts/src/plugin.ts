@@ -73,6 +73,7 @@ import emptyExports from "./rules/emptyExports.ts";
 import emptyFiles from "./rules/emptyFiles.ts";
 import emptyFunctions from "./rules/emptyFunctions.ts";
 import emptyModuleAttributes from "./rules/emptyModuleAttributes.ts";
+import emptyObjectTypes from "./rules/emptyObjectTypes.ts";
 import emptyStaticBlocks from "./rules/emptyStaticBlocks.ts";
 import emptyTypeParameterLists from "./rules/emptyTypeParameterLists.ts";
 import enumInitializers from "./rules/enumInitializers.ts";
@@ -218,6 +219,7 @@ export const ts = createPlugin({
 		emptyFiles,
 		emptyFunctions,
 		emptyModuleAttributes,
+		emptyObjectTypes,
 		emptyStaticBlocks,
 		emptyTypeParameterLists,
 		enumInitializers,
