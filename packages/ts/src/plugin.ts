@@ -88,6 +88,7 @@ import evals from "./rules/evals.ts";
 import evolvingVariableTypes from "./rules/evolvingVariableTypes.ts";
 import exceptionAssignments from "./rules/exceptionAssignments.ts";
 import explicitAnys from "./rules/explicitAnys.ts";
+import exponentiationOperators from "./rules/exponentiationOperators.ts";
 import exportMutables from "./rules/exportMutables.ts";
 import exportUniqueNames from "./rules/exportUniqueNames.ts";
 import fetchMethodBodies from "./rules/fetchMethodBodies.ts";
@@ -240,6 +241,7 @@ export const ts = createPlugin({
 		evals,
 		evolvingVariableTypes,
 		exceptionAssignments,
+		exponentiationOperators,
 		explicitAnys,
 		exportMutables,
 		exportUniqueNames,
