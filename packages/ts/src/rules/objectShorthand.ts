@@ -108,54 +108,46 @@ export default ruleCreator.createRule(typescriptLanguage, {
 
 					const initializer = unwrapParenthesizedExpression(node.initializer);
 
-					if (initializer.kind === SyntaxKind.Identifier) {
-						if (initializer.text !== keyText) {
+					switch (initializer.kind) {
+						case SyntaxKind.ArrowFunction:
+							if (
+								initializer.body.kind === SyntaxKind.Block &&
+								!hasAsyncModifier(initializer.modifiers) &&
+								!containsThisOrArguments(initializer.body)
+							) {
+								context.report({
+									message: "expectedMethodShorthand",
+									range: getTSNodeRange(node, sourceFile),
+								});
+							}
 							return;
-						}
 
-						if (
-							node.name.kind === SyntaxKind.StringLiteral &&
-							!isValidIdentifier(keyText)
-						) {
+						case SyntaxKind.FunctionExpression:
+							if (!initializer.name) {
+								context.report({
+									message: "expectedMethodShorthand",
+									range: getTSNodeRange(node, sourceFile),
+								});
+							}
 							return;
-						}
 
-						context.report({
-							message: "expectedPropertyShorthand",
-							range: getTSNodeRange(node, sourceFile),
-						});
-						return;
-					}
+						case SyntaxKind.Identifier:
+							if (initializer.text !== keyText) {
+								return;
+							}
 
-					if (initializer.kind === SyntaxKind.FunctionExpression) {
-						if (initializer.name) {
+							if (
+								node.name.kind === SyntaxKind.StringLiteral &&
+								!isValidIdentifier(keyText)
+							) {
+								return;
+							}
+
+							context.report({
+								message: "expectedPropertyShorthand",
+								range: getTSNodeRange(node, sourceFile),
+							});
 							return;
-						}
-
-						context.report({
-							message: "expectedMethodShorthand",
-							range: getTSNodeRange(node, sourceFile),
-						});
-						return;
-					}
-
-					if (initializer.kind === SyntaxKind.ArrowFunction) {
-						if (initializer.body.kind !== SyntaxKind.Block) {
-							return;
-						}
-
-						if (hasAsyncModifier(initializer.modifiers)) {
-							return;
-						}
-
-						if (containsThisOrArguments(initializer.body)) {
-							return;
-						}
-
-						context.report({
-							message: "expectedMethodShorthand",
-							range: getTSNodeRange(node, sourceFile),
-						});
 					}
 				},
 			},
