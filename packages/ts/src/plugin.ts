@@ -184,6 +184,7 @@ import regexDuplicateCharacterClassCharacters from "./rules/regexDuplicateCharac
 import regexEmptyAlternatives from "./rules/regexEmptyAlternatives.ts";
 import regexEmptyGroups from "./rules/regexEmptyGroups.ts";
 import regexEmptyLazyQuantifiers from "./rules/regexEmptyLazyQuantifiers.ts";
+import regexExecutors from "./rules/regexExecutors.ts";
 import returnAssignments from "./rules/returnAssignments.ts";
 import selfAssignments from "./rules/selfAssignments.ts";
 import selfComparisons from "./rules/selfComparisons.ts";
@@ -394,6 +395,7 @@ export const ts = createPlugin({
 		regexEmptyAlternatives,
 		regexEmptyGroups,
 		regexEmptyLazyQuantifiers,
+		regexExecutors,
 		returnAssignments,
 		selfAssignments,
 		selfComparisons,
