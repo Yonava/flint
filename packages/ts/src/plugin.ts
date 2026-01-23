@@ -179,6 +179,7 @@ import regexContradictoryAssertions from "./rules/regexContradictoryAssertions.t
 import regexControlCharacterEscapes from "./rules/regexControlCharacterEscapes.ts";
 import regexControlCharacters from "./rules/regexControlCharacters.ts";
 import regexDigitMatchers from "./rules/regexDigitMatchers.ts";
+import regexDollarEscapes from "./rules/regexDollarEscapes.ts";
 import regexEmptyAlternatives from "./rules/regexEmptyAlternatives.ts";
 import regexEmptyGroups from "./rules/regexEmptyGroups.ts";
 import returnAssignments from "./rules/returnAssignments.ts";
@@ -386,6 +387,7 @@ export const ts = createPlugin({
 		regexControlCharacterEscapes,
 		regexControlCharacters,
 		regexDigitMatchers,
+		regexDollarEscapes,
 		regexEmptyAlternatives,
 		regexEmptyGroups,
 		returnAssignments,
