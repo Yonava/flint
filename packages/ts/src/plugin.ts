@@ -191,6 +191,7 @@ import regexEmptyStringLiterals from "./rules/regexEmptyStringLiterals.ts";
 import regexEscapeBackspaces from "./rules/regexEscapeBackspaces.ts";
 import regexExecutors from "./rules/regexExecutors.ts";
 import regexGraphemeStringLiterals from "./rules/regexGraphemeStringLiterals.ts";
+import regexHexadecimalEscapes from "./rules/regexHexadecimalEscapes.ts";
 import returnAssignments from "./rules/returnAssignments.ts";
 import selfAssignments from "./rules/selfAssignments.ts";
 import selfComparisons from "./rules/selfComparisons.ts";
@@ -408,6 +409,7 @@ export const ts = createPlugin({
 		regexEscapeBackspaces,
 		regexExecutors,
 		regexGraphemeStringLiterals,
+		regexHexadecimalEscapes,
 		returnAssignments,
 		selfAssignments,
 		selfComparisons,
