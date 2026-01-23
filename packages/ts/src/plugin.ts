@@ -173,6 +173,7 @@ import regexAllGlobalFlags from "./rules/regexAllGlobalFlags.ts";
 import regexCharacterClasses from "./rules/regexCharacterClasses.ts";
 import regexCharacterClassRanges from "./rules/regexCharacterClassRanges.ts";
 import regexConciseCharacterClassNegations from "./rules/regexConciseCharacterClassNegations.ts";
+import regexContradictoryAssertions from "./rules/regexContradictoryAssertions.ts";
 import regexControlCharacterEscapes from "./rules/regexControlCharacterEscapes.ts";
 import regexControlCharacters from "./rules/regexControlCharacters.ts";
 import regexDigitMatchers from "./rules/regexDigitMatchers.ts";
@@ -375,6 +376,7 @@ export const ts = createPlugin({
 		regexCharacterClasses,
 		regexCharacterClassRanges,
 		regexConciseCharacterClassNegations,
+		regexContradictoryAssertions,
 		regexControlCharacterEscapes,
 		regexControlCharacters,
 		regexDigitMatchers,
