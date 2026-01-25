@@ -200,6 +200,7 @@ import regexMatchNotation from "./rules/regexMatchNotation.ts";
 import regexMisleadingUnicodeCharacters from "./rules/regexMisleadingUnicodeCharacters.ts";
 import regexNamedReplacements from "./rules/regexNamedReplacements.ts";
 import regexNonStandardFlags from "./rules/regexNonStandardFlags.ts";
+import regexObscureRanges from "./rules/regexObscureRanges.ts";
 import regexOctalEscapes from "./rules/regexOctalEscapes.ts";
 import regexStarQuantifiers from "./rules/regexStarQuantifiers.ts";
 import regexTestMethods from "./rules/regexTestMethods.ts";
@@ -430,6 +431,7 @@ export const ts = createPlugin({
 		regexNamedReplacements,
 		regexNamedReplacements,
 		regexNonStandardFlags,
+		regexObscureRanges,
 		regexOctalEscapes,
 		regexStarQuantifiers,
 		regexTestMethods,
