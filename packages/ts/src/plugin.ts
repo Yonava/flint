@@ -209,6 +209,7 @@ import regexObscureRanges from "./rules/regexObscureRanges.ts";
 import regexOctalEscapes from "./rules/regexOctalEscapes.ts";
 import regexPlusQuantifiers from "./rules/regexPlusQuantifiers.ts";
 import regexQuestionQuantifiers from "./rules/regexQuestionQuantifiers.ts";
+import regexRepeatQuantifiers from "./rules/regexRepeatQuantifiers.ts";
 import regexResultArrayGroups from "./rules/regexResultArrayGroups.ts";
 import regexSetOperationOptimizations from "./rules/regexSetOperationOptimizations.ts";
 import regexStandaloneBackslashes from "./rules/regexStandaloneBackslashes.ts";
@@ -458,6 +459,7 @@ export const ts = createPlugin({
 		regexOctalEscapes,
 		regexPlusQuantifiers,
 		regexQuestionQuantifiers,
+		regexRepeatQuantifiers,
 		regexResultArrayGroups,
 		regexSetOperationOptimizations,
 		regexStandaloneBackslashes,
