@@ -19,7 +19,7 @@ export default ruleCreator.createRule(typescriptLanguage, {
 		description:
 			"Reports surrogate pair escapes in regular expressions that can be replaced with Unicode codepoint escapes.",
 		id: "regexUnicodeCodepointEscapes",
-		presets: ["stylistic"],
+		presets: ["stylistic", "stylisticStrict"],
 	},
 	messages: {
 		useSurrogatePair: {
