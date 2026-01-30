@@ -231,6 +231,7 @@ import regexUnnecessaryEscapes from "./rules/regexUnnecessaryEscapes.ts";
 import returnAssignments from "./rules/returnAssignments.ts";
 import selfAssignments from "./rules/selfAssignments.ts";
 import sequences from "./rules/sequences.ts";
+import setterReturns from "./rules/setterReturns.ts";
 import shadowedRestrictedNames from "./rules/shadowedRestrictedNames.ts";
 import singleVariableDeclarations from "./rules/singleVariableDeclarations.ts";
 import sparseArrays from "./rules/sparseArrays.ts";
@@ -487,6 +488,7 @@ export const ts = createPlugin({
 		returnAssignments,
 		selfAssignments,
 		sequences,
+		setterReturns,
 		shadowedRestrictedNames,
 		singleVariableDeclarations,
 		sparseArrays,
