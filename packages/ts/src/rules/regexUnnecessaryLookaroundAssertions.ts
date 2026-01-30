@@ -45,7 +45,18 @@ export default ruleCreator.createRule(typescriptLanguage, {
 				element.kind === kind &&
 				!element.negate
 			) {
+				const innerContent = element.raw.slice(
+					kind === "lookahead" ? 3 : 4,
+					-1,
+				);
 				context.report({
+					fix: {
+						range: {
+							begin: patternStart + element.start,
+							end: patternStart + element.end,
+						},
+						text: innerContent,
+					},
 					message: kind,
 					range: {
 						begin: patternStart + element.start,

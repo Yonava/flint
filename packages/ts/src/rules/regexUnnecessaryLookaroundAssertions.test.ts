@@ -5,116 +5,159 @@ ruleTester.describe(rule, {
 	invalid: [
 		{
 			code: `
-/(?=content(?=nested))/;
+/(?=a(?=b))/;
+`,
+			output: `
+/(?=ab)/;
 `,
 			snapshot: `
-/(?=content(?=nested))/;
-           ~~~~~~~~~~
-           This lookahead assertion is unnecessary because it is at the end of another lookahead.
+/(?=a(?=b))/;
+     ~~~~~
+     This lookahead assertion is unnecessary because it is at the end of another lookahead.
 `,
 		},
 		{
 			code: `
-/(?<=(?<=nested)content)/;
+/(?=a(?=b))/v;
+`,
+			output: `
+/(?=ab)/v;
 `,
 			snapshot: `
-/(?<=(?<=nested)content)/;
-     ~~~~~~~~~~~
+/(?=a(?=b))/v;
+     ~~~~~
+     This lookahead assertion is unnecessary because it is at the end of another lookahead.
+`,
+		},
+		{
+			code: `
+/(?=foo(?=bar))/;
+`,
+			output: `
+/(?=foobar)/;
+`,
+			snapshot: `
+/(?=foo(?=bar))/;
+       ~~~~~~~
+       This lookahead assertion is unnecessary because it is at the end of another lookahead.
+`,
+		},
+		{
+			code: `
+/(?<=(?<=a)b)/;
+`,
+			output: `
+/(?<=ab)/;
+`,
+			snapshot: `
+/(?<=(?<=a)b)/;
+     ~~~~~~
      This lookbehind assertion is unnecessary because it is at the start of another lookbehind.
 `,
 		},
 		{
 			code: `
-/(?!content(?=nested))/;
+/(?<=(?<=foo)bar)/;
+`,
+			output: `
+/(?<=foobar)/;
 `,
 			snapshot: `
-/(?!content(?=nested))/;
-           ~~~~~~~~~~
-           This lookahead assertion is unnecessary because it is at the end of another lookahead.
-`,
-		},
-		{
-			code: `
-/(?<!(?<=nested)content)/;
-`,
-			snapshot: `
-/(?<!(?<=nested)content)/;
-     ~~~~~~~~~~~
+/(?<=(?<=foo)bar)/;
+     ~~~~~~~~
      This lookbehind assertion is unnecessary because it is at the start of another lookbehind.
 `,
 		},
 		{
 			code: `
-new RegExp("(?=content(?=nested))");
+/(?=(?=abc))/;
+`,
+			output: `
+/(?=abc)/;
 `,
 			snapshot: `
-new RegExp("(?=content(?=nested))");
-                      ~~~~~~~~~~
-                      This lookahead assertion is unnecessary because it is at the end of another lookahead.
-`,
-		},
-		{
-			code: `
-new RegExp("(?<=(?<=nested)content)");
-`,
-			snapshot: `
-new RegExp("(?<=(?<=nested)content)");
-                ~~~~~~~~~~~
-                This lookbehind assertion is unnecessary because it is at the start of another lookbehind.
-`,
-		},
-		{
-			code: `
-/(?=first|second(?=nested))/;
-`,
-			snapshot: `
-/(?=first|second(?=nested))/;
-                ~~~~~~~~~~
-                This lookahead assertion is unnecessary because it is at the end of another lookahead.
-`,
-		},
-		{
-			code: `
-/(?<=(?<=nested)first|second)/;
-`,
-			snapshot: `
-/(?<=(?<=nested)first|second)/;
-     ~~~~~~~~~~~
-     This lookbehind assertion is unnecessary because it is at the start of another lookbehind.
-`,
-		},
-		{
-			code: `
-/(?=(?=nested))/;
-`,
-			snapshot: `
-/(?=(?=nested))/;
-    ~~~~~~~~~~
+/(?=(?=abc))/;
+    ~~~~~~~
     This lookahead assertion is unnecessary because it is at the end of another lookahead.
 `,
 		},
 		{
 			code: `
-/(?<=(?<=nested))/;
+/(?<=(?<=abc))/;
+`,
+			output: `
+/(?<=abc)/;
 `,
 			snapshot: `
-/(?<=(?<=nested))/;
-     ~~~~~~~~~~~
+/(?<=(?<=abc))/;
+     ~~~~~~~~
+     This lookbehind assertion is unnecessary because it is at the start of another lookbehind.
+`,
+		},
+		{
+			code: `
+new RegExp("(?=a(?=b))");
+`,
+			output: `
+new RegExp("(?=ab)");
+`,
+			snapshot: `
+new RegExp("(?=a(?=b))");
+                ~~~~~
+                This lookahead assertion is unnecessary because it is at the end of another lookahead.
+`,
+		},
+		{
+			code: `
+RegExp("(?<=(?<=x)y)");
+`,
+			output: `
+RegExp("(?<=xy)");
+`,
+			snapshot: `
+RegExp("(?<=(?<=x)y)");
+            ~~~~~~
+            This lookbehind assertion is unnecessary because it is at the start of another lookbehind.
+`,
+		},
+		{
+			code: String.raw`
+/(?=\w(?=\d))/;
+`,
+			output: String.raw`
+/(?=\w\d)/;
+`,
+			snapshot: String.raw`
+/(?=\w(?=\d))/;
+      ~~~~~~
+      This lookahead assertion is unnecessary because it is at the end of another lookahead.
+`,
+		},
+		{
+			code: String.raw`
+/(?<=(?<=\s)\w)/;
+`,
+			output: String.raw`
+/(?<=\s\w)/;
+`,
+			snapshot: String.raw`
+/(?<=(?<=\s)\w)/;
+     ~~~~~~~
      This lookbehind assertion is unnecessary because it is at the start of another lookbehind.
 `,
 		},
 	],
 	valid: [
-		`/(?=content(?!nested))/;`,
-		`/(?<=(?<!nested)content)/;`,
-		`/(?=(?=nested)content)/;`,
-		`/(?<=content(?<=nested))/;`,
-		`/(?=content)/;`,
-		`/(?<=content)/;`,
-		`new RegExp(variable);`,
-		`/(?!content(?!nested))/;`,
-		`/(?<!(?<!nested)content)/;`,
-		`/value(?=test)/;`,
-		`/(?<=test)value/;`,
+		`/(?=ab)/;`,
+		`/(?<=ab)/;`,
+		`/(?!a(?!b))/;`,
+		`/(?<!(?<!a)b)/;`,
+		`/(?=a)(?=b)/;`,
+		`/(?<=a)(?<=b)/;`,
+		`/(?=(?!b)a)/;`,
+		`/(?<=a(?!b))/;`,
+		`/(?=a(?<=b))/;`,
+		`/(?<=(?=a)b)/;`,
+		`RegExp(variable);`,
 	],
 });
