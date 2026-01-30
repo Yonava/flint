@@ -257,6 +257,7 @@ import structuredCloneMethods from "./rules/structuredCloneMethods.ts";
 import symbolDescriptions from "./rules/symbolDescriptions.ts";
 import thisAliases from "./rules/thisAliases.ts";
 import thisBeforeSuper from "./rules/thisBeforeSuper.ts";
+import throwErrors from "./rules/throwErrors.ts";
 import topLevelAwaits from "./rules/topLevelAwaits.ts";
 import tripleSlashReferences from "./rules/tripleSlashReferences.ts";
 import tripleSlashReferenceValidity from "./rules/tripleSlashReferenceValidity.ts";
@@ -539,6 +540,7 @@ export const ts = createPlugin({
 		symbolDescriptions,
 		thisAliases,
 		thisBeforeSuper,
+		throwErrors,
 		topLevelAwaits,
 		tripleSlashReferences,
 		tripleSlashReferenceValidity,
