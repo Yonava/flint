@@ -247,6 +247,7 @@ import sparseArrays from "./rules/sparseArrays.ts";
 import staticMemberOnlyClasses from "./rules/staticMemberOnlyClasses.ts";
 import stringCaseMismatches from "./rules/stringCaseMismatches.ts";
 import stringCodePoints from "./rules/stringCodePoints.ts";
+import stringSliceMethods from "./rules/stringSliceMethods.ts";
 import symbolDescriptions from "./rules/symbolDescriptions.ts";
 import thisAliases from "./rules/thisAliases.ts";
 import thisBeforeSuper from "./rules/thisBeforeSuper.ts";
@@ -519,9 +520,10 @@ export const ts = createPlugin({
 		singleVariableDeclarations,
 		sizeComparisonOperators,
 		sparseArrays,
-		stringCodePoints,
 		staticMemberOnlyClasses,
 		stringCaseMismatches,
+		stringCodePoints,
+		stringSliceMethods,
 		symbolDescriptions,
 		thisBeforeSuper,
 		thisAliases,
