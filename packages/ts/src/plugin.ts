@@ -232,6 +232,7 @@ import regexUnnecessaryDollarReplacements from "./rules/regexUnnecessaryDollarRe
 import regexUnnecessaryEscapes from "./rules/regexUnnecessaryEscapes.ts";
 import regexUnnecessaryLookaroundAssertions from "./rules/regexUnnecessaryLookaroundAssertions.ts";
 import regexUnnecessaryNestedAssertions from "./rules/regexUnnecessaryNestedAssertions.ts";
+import regexUnnecessaryNestedQuantifiers from "./rules/regexUnnecessaryNestedQuantifiers.ts";
 import regexUnnecessaryNonCapturingGroups from "./rules/regexUnnecessaryNonCapturingGroups.ts";
 import regexUnnecessaryNumericQuantifiers from "./rules/regexUnnecessaryNumericQuantifiers.ts";
 import regexUnnecessaryOptionalAssertions from "./rules/regexUnnecessaryOptionalAssertions.ts";
@@ -521,6 +522,7 @@ export const ts = createPlugin({
 		regexUnnecessaryEscapes,
 		regexUnnecessaryLookaroundAssertions,
 		regexUnnecessaryNestedAssertions,
+		regexUnnecessaryNestedQuantifiers,
 		regexUnnecessaryNonCapturingGroups,
 		regexUnnecessaryNumericQuantifiers,
 		regexUnnecessaryOptionalAssertions,
