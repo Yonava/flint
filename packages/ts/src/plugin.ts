@@ -237,6 +237,7 @@ import regexUnnecessaryNonCapturingGroups from "./rules/regexUnnecessaryNonCaptu
 import regexUnnecessaryNumericQuantifiers from "./rules/regexUnnecessaryNumericQuantifiers.ts";
 import regexUnnecessaryOptionalAssertions from "./rules/regexUnnecessaryOptionalAssertions.ts";
 import regexUnnecessaryReferentialBackreferences from "./rules/regexUnnecessaryReferentialBackreferences.ts";
+import regexUnnecessarySetOperands from "./rules/regexUnnecessarySetOperands.ts";
 import regexUnusedCapturingGroups from "./rules/regexUnusedCapturingGroups.ts";
 import regexUnusedFlags from "./rules/regexUnusedFlags.ts";
 import regexUnusedLazyQuantifiers from "./rules/regexUnusedLazyQuantifiers.ts";
@@ -531,6 +532,7 @@ export const ts = createPlugin({
 		regexUnnecessaryNumericQuantifiers,
 		regexUnnecessaryOptionalAssertions,
 		regexUnnecessaryReferentialBackreferences,
+		regexUnnecessarySetOperands,
 		regexUnusedCapturingGroups,
 		regexUnusedFlags,
 		regexUnusedLazyQuantifiers,
