@@ -268,6 +268,7 @@ import tslintComments from "./rules/tslintComments.ts";
 import typeAssertionStyles from "./rules/typeAssertionStyles.ts";
 import typeofComparisons from "./rules/typeofComparisons.ts";
 import unassignedVariables from "./rules/unassignedVariables.ts";
+import undefinedTypeofChecks from "./rules/undefinedTypeofChecks.ts";
 import undefinedVariables from "./rules/undefinedVariables.ts";
 import unicodeBOMs from "./rules/unicodeBOMs.ts";
 import unnecessaryBlocks from "./rules/unnecessaryBlocks.ts";
@@ -554,6 +555,7 @@ export const ts = createPlugin({
 		typeAssertionStyles,
 		typeofComparisons,
 		unassignedVariables,
+		undefinedTypeofChecks,
 		undefinedVariables,
 		unicodeBOMs,
 		unnecessaryBlocks,
