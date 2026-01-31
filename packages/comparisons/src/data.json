@@ -17746,7 +17746,8 @@
 		"flint": {
 			"name": "unnecessaryBooleanCasts",
 			"plugin": "ts",
-			"preset": "stylistic"
+			"preset": "stylistic",
+			"status": "implemented"
 		},
 		"oxlint": [
 			{
