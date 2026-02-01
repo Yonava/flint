@@ -247,6 +247,7 @@ import regexWordMatchers from "./rules/regexWordMatchers.ts";
 import regexZeroQuantifiers from "./rules/regexZeroQuantifiers.ts";
 import responseJsonMethods from "./rules/responseJsonMethods.ts";
 import returnAssignments from "./rules/returnAssignments.ts";
+import returnThisTypes from "./rules/returnThisTypes.ts";
 import selfAssignments from "./rules/selfAssignments.ts";
 import sequences from "./rules/sequences.ts";
 import setSizeLengthChecks from "./rules/setSizeLengthChecks.ts";
@@ -464,7 +465,6 @@ export const ts = createPlugin({
 		propertyAccessNotation,
 		recursionOnlyArguments,
 		redundantTypeConstituents,
-		responseJsonMethods,
 		regexAllGlobalFlags,
 		regexAmbiguousInvalidity,
 		regexCharacterClasses,
@@ -541,7 +541,9 @@ export const ts = createPlugin({
 		regexValidity,
 		regexWordMatchers,
 		regexZeroQuantifiers,
+		responseJsonMethods,
 		returnAssignments,
+		returnThisTypes,
 		selfAssignments,
 		sequences,
 		setSizeLengthChecks,

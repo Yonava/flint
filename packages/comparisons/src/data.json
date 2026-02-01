@@ -16238,6 +16238,7 @@
 			"name": "returnThisTypes",
 			"plugin": "ts",
 			"preset": "logical",
+			"status": "implemented",
 			"strictness": "strict"
 		},
 		"oxlint": [
