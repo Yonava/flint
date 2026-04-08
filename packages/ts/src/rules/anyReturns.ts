@@ -72,10 +72,10 @@ export default ruleCreator.createRule(typescriptLanguage, {
 				// However, isFunctionLike also checks for signature-like nodes,
 				// whereas isFunctionLikeDeclaration checks only for function-like nodes.
 				/* eslint-disable @typescript-eslint/no-deprecated */
-				// flint-disable-lines-begin deprecated
+				// flint-disable-lines-begin ts/deprecated
 				tsutils.isFunctionLikeDeclaration,
 				/* eslint-enable @typescript-eslint/no-deprecated */
-				// flint-disable-lines-end deprecated
+				// flint-disable-lines-end ts/deprecated
 			);
 			if (!functionNode) {
 				return;
@@ -92,8 +92,8 @@ export default ruleCreator.createRule(typescriptLanguage, {
 			// const foo1: () => Set<string> = () => new Set<any>();
 			// the return type of the arrow function is Set<any> even though the variable is typed as Set<string>
 			let functionType =
-				functionNode.kind == SyntaxKind.FunctionExpression ||
-				functionNode.kind == SyntaxKind.ArrowFunction
+				functionNode.kind === SyntaxKind.FunctionExpression ||
+				functionNode.kind === SyntaxKind.ArrowFunction
 					? typeChecker.getContextualType(functionNode)
 					: typeChecker.getTypeAtLocation(functionNode);
 			functionType ??= typeChecker.getTypeAtLocation(functionNode);
@@ -249,7 +249,7 @@ export default ruleCreator.createRule(typescriptLanguage, {
 		return {
 			visitors: {
 				ArrowFunction: (node, fileService) => {
-					if (node.body.kind != SyntaxKind.Block) {
+					if (node.body.kind !== SyntaxKind.Block) {
 						checkReturn(node.body, node.body, fileService);
 					}
 				},

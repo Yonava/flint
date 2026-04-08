@@ -13,7 +13,8 @@
         "maintenance",
         "projectManagement",
         "tool",
-        "bug"
+        "bug",
+        "test"
       ],
       "login": "JoshuaKGoldberg",
       "name": "Josh Goldberg ✨",
@@ -85,7 +86,9 @@
       "contributions": [
         "bug",
         "maintenance",
-        "ideas"
+        "ideas",
+        "test",
+        "doc"
       ]
     },
     {
@@ -111,7 +114,8 @@
       "contributions": [
         "code",
         "maintenance",
-        "ideas"
+        "ideas",
+        "doc"
       ]
     },
     {
@@ -132,7 +136,8 @@
       "contributions": [
         "doc",
         "code",
-        "maintenance"
+        "maintenance",
+        "bug"
       ]
     },
     {
@@ -145,7 +150,9 @@
         "doc",
         "bug",
         "maintenance",
-        "tool"
+        "tool",
+        "code",
+        "infra"
       ]
     },
     {
@@ -171,6 +178,34 @@
       "name": "Tiberiu Sabău",
       "avatar_url": "https://avatars.githubusercontent.com/u/96194994?v=4",
       "profile": "https://github.com/tibisabau",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "cylewaitforit",
+      "name": "cylewaitforit",
+      "avatar_url": "https://avatars.githubusercontent.com/u/54253392?v=4",
+      "profile": "https://github.com/cylewaitforit",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "tylerlaprade",
+      "name": "Tyler C Laprade, CFA",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5475199?v=4",
+      "profile": "http://www.irrationalmindsthinkalike.com",
+      "contributions": [
+        "doc",
+        "ideas"
+      ]
+    },
+    {
+      "login": "sigmabrogz",
+      "name": "Sigmabro",
+      "avatar_url": "https://avatars.githubusercontent.com/u/122412346?v=4",
+      "profile": "https://github.com/Sigmabrogz",
       "contributions": [
         "code"
       ]
