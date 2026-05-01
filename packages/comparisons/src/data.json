@@ -2683,7 +2683,7 @@
 			}
 		],
 		"flint": {
-			"name": "scriptUrls",
+			"name": "targetBlanks",
 			"plugin": "jsx",
 			"status": "skipped"
 		},
@@ -3105,7 +3105,7 @@
 	},
 	{
 		"flint": {
-			"name": "headingBlankLines",
+			"name": "headingAfterHashClosingSpaces",
 			"plugin": "md",
 			"status": "skipped"
 		},
@@ -3119,7 +3119,7 @@
 	},
 	{
 		"flint": {
-			"name": "headingClosingSpaceMultiples",
+			"name": "headingBlankLines",
 			"plugin": "md",
 			"status": "skipped"
 		},
@@ -5440,18 +5440,6 @@
 	{
 		"eslint": [
 			{
-				"name": "package-json/require-man",
-				"url": "https://github.com/michaelfaith/eslint-plugin-package-json/issues/806"
-			}
-		],
-		"flint": {
-			"name": "manPresence",
-			"plugin": "package-json"
-		}
-	},
-	{
-		"eslint": [
-			{
 				"name": "package-json/valid-main",
 				"url": "https://github.com/michaelfaith/eslint-plugin-package-json/blob/HEAD/docs/rules/valid-main.md"
 			}
@@ -5473,20 +5461,6 @@
 		"flint": {
 			"name": "manPresence",
 			"plugin": "package-json",
-			"status": "implemented"
-		}
-	},
-	{
-		"eslint": [
-			{
-				"name": "package-json/valid-main",
-				"url": "https://github.com/JoshuaKGoldberg/eslint-plugin-package-json/blob/HEAD/docs/rules/valid-main.md"
-			}
-		],
-		"flint": {
-			"name": "manValidity",
-			"plugin": "package-json",
-			"preset": "logical",
 			"status": "implemented"
 		}
 	},
@@ -5979,19 +5953,6 @@
 		}
 	},
 	{
-		"eslint": [
-			{
-				"name": "package-json/valid-version",
-				"url": "https://github.com/michaelfaith/eslint-plugin-package-json/blob/HEAD/docs/rules/valid-version.md"
-			}
-		],
-		"flint": {
-			"name": "versionValidity",
-			"plugin": "package-json",
-			"preset": "logical"
-		}
-	},
-	{
 		"flint": {
 			"name": "workspacesPresence",
 			"plugin": "package-json",
@@ -6365,7 +6326,7 @@
 			}
 		],
 		"flint": {
-			"name": "crossComponentPropTypes",
+			"name": "deprecated",
 			"plugin": "react",
 			"status": "skipped"
 		},
@@ -12853,6 +12814,10 @@
 	{
 		"eslint": [
 			{
+				"name": "no-duplicate-imports",
+				"url": "https://eslint.org/docs/latest/rules/no-duplicate-imports"
+			},
+			{
 				"name": "import/no-duplicates",
 				"url": "https://github.com/import-js/eslint-plugin-import/blob/HEAD/docs/rules/no-duplicates.md"
 			}
@@ -12860,31 +12825,12 @@
 		"flint": {
 			"name": "importDuplicates",
 			"plugin": "ts",
-			"status": "skipped"
+			"preset": "logical"
 		},
 		"oxlint": [
 			{
 				"name": "import/no-duplicates",
 				"url": "https://oxc.rs/docs/guide/usage/linter/rules/import/no-duplicates.html"
-			}
-		]
-	},
-	{
-		"eslint": [
-			{
-				"name": "no-duplicate-imports",
-				"url": "https://eslint.org/docs/latest/rules/no-duplicate-imports"
-			}
-		],
-		"flint": {
-			"name": "importDuplicates",
-			"plugin": "ts",
-			"preset": "stylistic"
-		},
-		"oxlint": [
-			{
-				"name": "eslint/no-duplicate-imports",
-				"url": "https://oxc.rs/docs/guide/usage/linter/rules/eslint/no-duplicate-imports.html"
 			}
 		]
 	},
@@ -19521,17 +19467,7 @@
 			{
 				"name": "eslint/no-self-compare",
 				"url": "https://oxc.rs/docs/guide/usage/linter/rules/eslint/no-self-compare.html"
-			}
-		]
-	},
-	{
-		"flint": {
-			"name": "unnecessaryComparisons",
-			"plugin": "ts",
-			"preset": "logical",
-			"status": "implemented"
-		},
-		"oxlint": [
+			},
 			{
 				"name": "oxc/const-comparisons",
 				"url": "https://oxc.rs/docs/guide/usage/linter/rules/oxc/const-comparisons.html"
@@ -21085,7 +21021,7 @@
 			}
 		],
 		"flint": {
-			"name": "equalityMatchers",
+			"name": "toBeMatchers",
 			"plugin": "vitest",
 			"status": "skipped"
 		},
@@ -21808,20 +21744,6 @@
 			"plugin": "vitest",
 			"preset": "stylistic"
 		}
-	},
-	{
-		"eslint": [
-			{
-				"name": "no-importing-vitest-globals",
-				"url": "https://github.com/vitest-dev/eslint-plugin-vitest/blob/main/docs/rules/no-importing-vitest-globals.md"
-			}
-		],
-		"flint": {
-			"name": "vitestGlobalImports",
-			"plugin": "vitest",
-			"status": "skipped"
-		},
-		"notes": "For a no-longer-recommended globals style."
 	},
 	{
 		"eslint": [
