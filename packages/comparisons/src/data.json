@@ -5771,7 +5771,8 @@
 		"flint": {
 			"name": "publishConfigRedundancy",
 			"plugin": "package-json",
-			"preset": "logical"
+			"preset": "logical",
+			"status": "implemented"
 		}
 	},
 	{
