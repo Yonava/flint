@@ -85,12 +85,12 @@ export async function writeToCache(
 	}
 
 	await fs.writeFile(cacheFilePath, encoded.data);
+}
 
-	function containsGlobalDeclarations(rawFileContent: string) {
-		// Regex to match "declare global" or "declare module" strings
-		// while accounting for arbitrary whitespace/newlines
-		const globalsRegex = /declare\s+(?:global|module\s+['"][^'"]+['"])\s*\{/;
-		const hasGlobals = globalsRegex.test(rawFileContent);
-		return hasGlobals;
-	}
+function containsGlobalDeclarations(rawFileContent: string) {
+	// Regex to match "declare global" or "declare module" strings
+	// while accounting for arbitrary whitespace/newlines
+	const globalsRegex = /declare\s+(?:global|module\s+['"][^'"]+['"])\s*\{/;
+	const hasGlobals = globalsRegex.test(rawFileContent);
+	return hasGlobals;
 }

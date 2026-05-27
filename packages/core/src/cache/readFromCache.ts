@@ -75,6 +75,23 @@ export async function readFromCache(
 	>;
 	const filePathsToLint = new Set<string>();
 
+	for (const {
+		filePath,
+		touchTime: cachedTouchTime,
+	} of cache.filesWithGlobalDeclarations) {
+		const currentTouchTime = await host.getFileTouchTime(filePath);
+		if (currentTouchTime > cachedTouchTime) {
+			log(
+				"Linting all %d file path(s) due to %s containing global declarations and having a touch timestamp %d after cache timestamp %d",
+				allFilePaths.size,
+				filePath,
+				cachedTouchTime,
+				currentTouchTime,
+			);
+			return undefined;
+		}
+	}
+
 	// Any files touched since last cache write will need to be re-linted
 	for (const filePath of allFilePaths) {
 		const fileCached = cached.get(filePath);
