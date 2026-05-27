@@ -21,7 +21,7 @@ export default {
 		},
 		"packages/comparisons": {
 			entry: ["src/sort-data.ts!"],
-			project: ["src/**/*.ts!", "!src/test-util.ts!"],
+			project: ["src/**/*.ts!", "!src/test-utils/*.ts!"],
 		},
 		"packages/css": {
 			project: ["src/**/*.ts!", "!src/ruleTester.ts!"],
