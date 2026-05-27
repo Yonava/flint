@@ -28,6 +28,7 @@
 	"dependencies": {
 		"@flint.fyi/astro": "workspace:^",
 		"@flint.fyi/browser": "workspace:^",
+		"@flint.fyi/css": "workspace:^",
 		"@flint.fyi/jsx": "workspace:^",
 		"@flint.fyi/node": "workspace:^",
 		"@flint.fyi/performance": "workspace:^",
