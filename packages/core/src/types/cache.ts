@@ -8,8 +8,6 @@ export interface CacheStorage {
 }
 
 export interface FileCacheImpacts {
-	// TODO: also include dependents. (i.e. global type augmentations)
-	// https://github.com/flint-fyi/flint/issues/116
 	dependencies?: string[];
 }
 
