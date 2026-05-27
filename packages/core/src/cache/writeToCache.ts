@@ -5,7 +5,10 @@ import { CachedFactory } from "cached-factory";
 import { debugForFile } from "debug-for-file";
 import omitEmpty from "omit-empty";
 
-import type { CacheStorage } from "../types/cache.ts";
+import type {
+	CacheStorage,
+	FileWithGlobalDeclarations,
+} from "../types/cache.ts";
 import type { LinterHost } from "../types/host.ts";
 import type { LintResults } from "../types/linting.ts";
 import { cacheStorageSchema } from "./cacheSchema.ts";
@@ -21,8 +24,21 @@ export async function writeToCache(
 ) {
 	const fileDependents = new CachedFactory(() => new Set<string>());
 	const timestamp = Date.now();
+	const filesWithGlobalDeclarations: FileWithGlobalDeclarations[] = [];
 
 	for (const [filePath, fileResult] of lintResults.filesResults) {
+		const rawFileContent = await host.readFile(filePath);
+		if (rawFileContent === undefined) {
+			log("Failed to resolve file path for file in lint results: %s", filePath);
+			continue;
+		}
+		const hasGlobals = containsGlobalDeclarations(rawFileContent);
+		if (hasGlobals) {
+			filesWithGlobalDeclarations.push({
+				filePath,
+				touchTime: await host.getFileTouchTime(filePath),
+			});
+		}
 		for (const dependency of fileResult.dependencies) {
 			fileDependents.get(dependency).add(filePath);
 		}
@@ -54,6 +70,7 @@ export async function writeToCache(
 					),
 				)),
 		},
+		filesWithGlobalDeclarations,
 	};
 
 	const cacheFilePath = getCacheFilePath(cacheLocation);
@@ -68,4 +85,12 @@ export async function writeToCache(
 	}
 
 	await fs.writeFile(cacheFilePath, encoded.data);
+
+	function containsGlobalDeclarations(rawFileContent: string) {
+		// Regex to match "declare global" or "declare module" strings
+		// while accounting for arbitrary whitespace/newlines
+		const globalsRegex = /declare\s+(?:global|module\s+['"][^'"]+['"])\s*\{/;
+		const hasGlobals = globalsRegex.test(rawFileContent);
+		return hasGlobals;
+	}
 }
