@@ -4,6 +4,7 @@ import { dirname } from "node:path";
 import { CachedFactory } from "cached-factory";
 import { debugForFile } from "debug-for-file";
 import omitEmpty from "omit-empty";
+import ts from "typescript";
 
 import type {
 	CacheStorage,
@@ -88,9 +89,30 @@ export async function writeToCache(
 }
 
 function containsGlobalDeclarations(rawFileContent: string) {
-	// Regex to match "declare global" or "declare module" strings
-	// while accounting for arbitrary whitespace/newlines
-	const globalsRegex = /declare\s+(?:global|module\s+['"][^'"]+['"])\s*\{/;
-	const hasGlobals = globalsRegex.test(rawFileContent);
-	return hasGlobals;
+	const sourceFileNode = ts.createSourceFile(
+		"mayContainGlobals.ts",
+		rawFileContent,
+		ts.ScriptTarget.ESNext,
+		true,
+	);
+
+	return sourceFileNode.statements.some((statement) => {
+		// checks for 'declare global {}'
+		if (ts.isModuleDeclaration(statement) && statement.name.text === "global") {
+			return true;
+		}
+
+		// checks for 'declare' keyword
+		const canHaveModifiers = ts.canHaveModifiers(statement);
+		if (!canHaveModifiers) {
+			return false;
+		}
+
+		const modifiers = ts.getModifiers(statement);
+		const hasDeclareKeyword = modifiers?.some(
+			(mod) => mod.kind === ts.SyntaxKind.DeclareKeyword,
+		);
+
+		return hasDeclareKeyword;
+	});
 }
