@@ -4,7 +4,6 @@ import { dirname } from "node:path";
 import { CachedFactory } from "cached-factory";
 import { debugForFile } from "debug-for-file";
 import omitEmpty from "omit-empty";
-import ts from "typescript";
 
 import type {
 	CacheStorage,
@@ -13,6 +12,7 @@ import type {
 import type { LinterHost } from "../types/host.ts";
 import type { LintResults } from "../types/linting.ts";
 import { cacheStorageSchema } from "./cacheSchema.ts";
+import { containsGlobalDeclarations } from "./containsGlobalDeclarations.ts";
 import { getCacheFilePath } from "./getCacheFilePath.ts";
 
 const log = debugForFile(import.meta.filename);
@@ -86,33 +86,4 @@ export async function writeToCache(
 	}
 
 	await fs.writeFile(cacheFilePath, encoded.data);
-}
-
-function containsGlobalDeclarations(rawFileContent: string) {
-	const sourceFileNode = ts.createSourceFile(
-		"mayContainGlobals.ts",
-		rawFileContent,
-		ts.ScriptTarget.ESNext,
-		true,
-	);
-
-	return sourceFileNode.statements.some((statement) => {
-		// checks for 'declare global {}'
-		if (ts.isModuleDeclaration(statement) && statement.name.text === "global") {
-			return true;
-		}
-
-		// checks for 'declare' keyword
-		const canHaveModifiers = ts.canHaveModifiers(statement);
-		if (!canHaveModifiers) {
-			return false;
-		}
-
-		const modifiers = ts.getModifiers(statement);
-		const hasDeclareKeyword = modifiers?.some(
-			(mod) => mod.kind === ts.SyntaxKind.DeclareKeyword,
-		);
-
-		return hasDeclareKeyword;
-	});
 }
