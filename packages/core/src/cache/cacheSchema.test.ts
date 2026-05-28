@@ -279,7 +279,7 @@ describe("cacheStorageSchema decoding", () => {
 
 describe("cacheStorageSchema", () => {
 	it("encodes valid cache data to JSON string", () => {
-		const validCache = {
+		const validCache: CacheStorage = {
 			configs: {
 				"flint.config.ts": 1_234_567_890,
 				"package.json": 1_234_567_890,
@@ -289,6 +289,7 @@ describe("cacheStorageSchema", () => {
 					timestamp: 1_234_567_890,
 				},
 			},
+			filesWithGlobalDeclarations: [],
 		};
 
 		const encoded = z.encode(cacheStorageSchema, validCache);
@@ -353,7 +354,7 @@ describe("cacheStorageSchema", () => {
 	});
 
 	it("roundtrips cache data correctly", () => {
-		const original = {
+		const original: CacheStorage = {
 			configs: {
 				"flint.config.ts": 1_234_567_890,
 				"package.json": 1_234_567_890,
@@ -378,6 +379,7 @@ describe("cacheStorageSchema", () => {
 					timestamp: 1_234_567_890,
 				},
 			},
+			filesWithGlobalDeclarations: [],
 		};
 
 		const encoded = z.encode(cacheStorageSchema, original);
@@ -419,6 +421,7 @@ describe("toSerializableCacheStorage encoding", () => {
 					timestamp: 123,
 				},
 			},
+			filesWithGlobalDeclarations: [],
 		};
 
 		const result = z.decode(
@@ -459,6 +462,7 @@ describe("toSerializableCacheStorage encoding", () => {
 					timestamp: 123,
 				},
 			},
+			filesWithGlobalDeclarations: [],
 		};
 
 		const result = z.decode(
@@ -479,6 +483,7 @@ describe("toSerializableCacheStorage encoding", () => {
 					timestamp: 123,
 				},
 			},
+			filesWithGlobalDeclarations: [],
 		};
 
 		const result = z.decode(
@@ -519,6 +524,7 @@ describe("toSerializableCacheStorage encoding", () => {
 					timestamp: 123,
 				},
 			},
+			filesWithGlobalDeclarations: [],
 		};
 
 		const serializable = z.decode(
