@@ -42,6 +42,15 @@ describe("containsGlobalDeclarations", () => {
 		expect(containsGlobalDeclarations("\n  \n")).toBe(false);
 	});
 
+	it("should return false for module files with top-level declare that does not use declare global", () => {
+		const code = `
+      import { foo } from './foo';
+      declare function localHelper(): void;
+      declare const config: { debug: boolean };
+    `;
+		expect(containsGlobalDeclarations(code)).toBe(false);
+	});
+
 	it('should return false for inline type annotations that use the word "global"', () => {
 		const code = `
       import { globalState } from './store';

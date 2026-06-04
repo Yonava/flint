@@ -16,23 +16,26 @@ export function containsGlobalDeclarations(rawFileContent: string) {
 		true,
 	);
 
+	const isModule = sourceFileNode.externalModuleIndicator !== undefined;
+
 	return sourceFileNode.statements.some((statement) => {
 		// checks for 'declare global {}'
 		if (ts.isModuleDeclaration(statement) && statement.name.text === "global") {
 			return true;
 		}
 
-		// checks for 'declare' keyword
+		// In a module file, bare `declare` statements are local to the module
+		if (isModule) {
+			return false;
+		}
+
+		// In a script file, top-level `declare` statements affect the global scope
 		const canHaveModifiers = ts.canHaveModifiers(statement);
 		if (!canHaveModifiers) {
 			return false;
 		}
 
 		const modifiers = ts.getModifiers(statement);
-		const hasDeclareKeyword = modifiers?.some(
-			(mod) => mod.kind === ts.SyntaxKind.DeclareKeyword,
-		);
-
-		return hasDeclareKeyword;
+		return modifiers?.some((mod) => mod.kind === ts.SyntaxKind.DeclareKeyword);
 	});
 }
