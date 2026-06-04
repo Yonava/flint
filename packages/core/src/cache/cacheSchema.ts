@@ -87,8 +87,8 @@ const fileWithGlobalDeclarationsSchema = z.object({
 
 export const cacheStorageSchema = jsonCodec(
 	z.object({
+		cacheInvalidatingFiles: z.array(fileWithGlobalDeclarationsSchema),
 		configs: z.record(z.string(), z.number()),
 		files: z.record(z.string(), fileCacheStorageSchema),
-		filesWithGlobalDeclarations: z.array(fileWithGlobalDeclarationsSchema),
 	}),
 );

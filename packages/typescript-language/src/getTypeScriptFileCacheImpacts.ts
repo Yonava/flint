@@ -17,5 +17,7 @@ export function getTypeScriptFileCacheImpacts(
 				file.services.sourceFile,
 			),
 		],
+		// where global detection goes
+		invalidatesCache: false,
 	};
 }

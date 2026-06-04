@@ -5,14 +5,10 @@ import { CachedFactory } from "cached-factory";
 import { debugForFile } from "debug-for-file";
 import omitEmpty from "omit-empty";
 
-import type {
-	CacheStorage,
-	FileWithGlobalDeclarations,
-} from "../types/cache.ts";
+import type { CacheInvalidatingFile, CacheStorage } from "../types/cache.ts";
 import type { LinterHost } from "../types/host.ts";
 import type { LintResults } from "../types/linting.ts";
 import { cacheStorageSchema } from "./cacheSchema.ts";
-import { containsGlobalDeclarations } from "./containsGlobalDeclarations.ts";
 import { getCacheFilePath } from "./getCacheFilePath.ts";
 
 const log = debugForFile(import.meta.filename);
@@ -25,17 +21,11 @@ export async function writeToCache(
 ) {
 	const fileDependents = new CachedFactory(() => new Set<string>());
 	const timestamp = Date.now();
-	const filesWithGlobalDeclarations: FileWithGlobalDeclarations[] = [];
+	const cacheInvalidatingFiles: CacheInvalidatingFile[] = [];
 
 	for (const [filePath, fileResult] of lintResults.filesResults) {
-		const rawFileContent = await host.readFile(filePath);
-		if (rawFileContent === undefined) {
-			log("Failed to resolve file path for file in lint results: %s", filePath);
-			continue;
-		}
-		const hasGlobals = containsGlobalDeclarations(rawFileContent);
-		if (hasGlobals) {
-			filesWithGlobalDeclarations.push({
+		if (fileResult.invalidatesCache) {
+			cacheInvalidatingFiles.push({
 				filePath,
 				touchTime: await host.getFileTouchTime(filePath),
 			});
@@ -46,6 +36,7 @@ export async function writeToCache(
 	}
 
 	const storage: CacheStorage = {
+		cacheInvalidatingFiles,
 		configs: {
 			[configFileName]: await host.getFileTouchTime(configFileName),
 			"package.json": await host.getFileTouchTime("package.json"),
@@ -71,7 +62,6 @@ export async function writeToCache(
 					),
 				)),
 		},
-		filesWithGlobalDeclarations,
 	};
 
 	const cacheFilePath = getCacheFilePath(cacheLocation);

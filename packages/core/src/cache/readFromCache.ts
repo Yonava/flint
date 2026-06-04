@@ -78,7 +78,7 @@ export async function readFromCache(
 	for (const {
 		filePath,
 		touchTime: cachedTouchTime,
-	} of cache.filesWithGlobalDeclarations) {
+	} of cache.cacheInvalidatingFiles) {
 		const currentTouchTime = await host.getFileTouchTime(filePath);
 		if (currentTouchTime > cachedTouchTime) {
 			log(
