@@ -82,7 +82,7 @@ export async function readFromCache(
 		const currentTouchTime = await host.getFileTouchTime(filePath);
 		if (currentTouchTime > cachedTouchTime) {
 			log(
-				"Linting all %d file path(s) due to %s containing cache invalidation flag and having a touch timestamp %d after cache timestamp %d",
+				"Linting all %d file(s) because cache-invalidating file %s has changed (current: %d, cached: %d)",
 				allFilePaths.size,
 				filePath,
 				currentTouchTime,

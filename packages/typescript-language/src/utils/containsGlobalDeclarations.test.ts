@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { containsGlobalDeclarations } from "./containsGlobalDeclarations.ts";
 
 describe("containsGlobalDeclarations", () => {
-	it('should return true for "declare global" blocks', () => {
+	it("returns true for declare global blocks", () => {
 		const code = `
       import { Something } from 'some-module';
       declare global {
@@ -15,14 +15,14 @@ describe("containsGlobalDeclarations", () => {
 		expect(containsGlobalDeclarations(code)).toBe(true);
 	});
 
-	it("should return true for top-level ambient functions", () => {
+	it("returns true for top-level ambient declarations in script files", () => {
 		const code = `
       declare function initializeAnalytics(): void;
     `;
 		expect(containsGlobalDeclarations(code)).toBe(true);
 	});
 
-	it("should return false for standard module code without global modifications", () => {
+	it("returns false for standard module code", () => {
 		const code = `
       import axios from 'axios';
 
@@ -37,12 +37,12 @@ describe("containsGlobalDeclarations", () => {
 		expect(containsGlobalDeclarations(code)).toBe(false);
 	});
 
-	it("should return false for empty source files", () => {
+	it("returns false for empty source files", () => {
 		expect(containsGlobalDeclarations("")).toBe(false);
 		expect(containsGlobalDeclarations("\n  \n")).toBe(false);
 	});
 
-	it("should return false for module files with top-level declare that does not use declare global", () => {
+	it("returns false for module files with top-level declare outside declare global", () => {
 		const code = `
       import { foo } from './foo';
       declare function localHelper(): void;
@@ -51,7 +51,7 @@ describe("containsGlobalDeclarations", () => {
 		expect(containsGlobalDeclarations(code)).toBe(false);
 	});
 
-	it('should return false for inline type annotations that use the word "global"', () => {
+	it('returns false for inline type annotations that reference "global" by name', () => {
 		const code = `
       import { globalState } from './store';
       const myVar: typeof globalState = { active: true };
