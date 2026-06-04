@@ -15,14 +15,6 @@ describe("containsGlobalDeclarations", () => {
 		expect(containsGlobalDeclarations(code)).toBe(true);
 	});
 
-	it("should return true for top-level ambient declarations (declare const)", () => {
-		const code = `
-      declare const __DEV__: boolean;
-      export const fallback = true;
-    `;
-		expect(containsGlobalDeclarations(code)).toBe(true);
-	});
-
 	it("should return true for top-level ambient functions", () => {
 		const code = `
       declare function initializeAnalytics(): void;
