@@ -50,7 +50,7 @@ export function finalizeFileResults(
 		if (cacheImpacts?.invalidatesCache) {
 			invalidatesCache = true;
 			log(
-				"File %s marked as invalidates cache. Every file will therefore be treated as a dependency",
+				'File "%s" contains code that is global in nature and will invalidate the linting cache when changed.',
 				filePath,
 			);
 		}
