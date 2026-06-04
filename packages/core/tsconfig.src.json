@@ -6,7 +6,11 @@
 		"types": ["node"]
 	},
 	"extends": "../../tsconfig.base.json",
-	"include": ["src"],
+	"include": [
+		"src",
+		"../typescript-language/src/utils/containsGlobalDeclarations.test.ts",
+		"../typescript-language/src/utils/containsGlobalDeclarations.ts"
+	],
 	"exclude": ["src/**/*.test.ts"],
 	"references": [{ "path": "../utils" }]
 }

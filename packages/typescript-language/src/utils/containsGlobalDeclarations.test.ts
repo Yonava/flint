@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { containsGlobalDeclarations } from "./containsGlobalDeclarations.ts";
+import { containsGlobalDeclarations } from "../../../core/src/cache/containsGlobalDeclarations.ts";
 
 describe("containsGlobalDeclarations", () => {
 	it('should return true for "declare global" blocks', () => {
