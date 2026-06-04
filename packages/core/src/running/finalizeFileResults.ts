@@ -33,7 +33,7 @@ export function finalizeFileResults(
 	reports: FileReport[],
 	host: LinterHost,
 	skipLanguageReports?: boolean,
-) {
+): FinalizedFileResults {
 	const directivesFilterer = new DirectivesFilterer();
 	const fileDependencies = new Set<string>();
 	const languageReports: LanguageReport[] = [];
@@ -96,7 +96,7 @@ export function finalizeFileResults(
 		(directive) => directiveReports.createUnused(directive),
 	);
 
-	const finalizedFileResults: FinalizedFileResults = {
+	return {
 		dependencies: fileDependencies,
 		invalidatesCache,
 		languageReports,
@@ -106,6 +106,4 @@ export function finalizeFileResults(
 			...unusedDirectiveReports,
 		],
 	};
-
-	return finalizedFileResults;
 }
