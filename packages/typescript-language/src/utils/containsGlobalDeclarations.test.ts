@@ -1,3 +1,4 @@
+import ts from "typescript";
 import { describe, expect, it } from "vitest";
 
 import { containsGlobalDeclarations } from "./containsGlobalDeclarations.ts";
@@ -12,14 +13,16 @@ describe("containsGlobalDeclarations", () => {
         }
       }
     `;
-		expect(containsGlobalDeclarations(code)).toBe(true);
+		const sourceFile = getSourceFile(code);
+		expect(containsGlobalDeclarations(sourceFile)).toBe(true);
 	});
 
 	it("returns true for top-level ambient declarations in script files", () => {
 		const code = `
       declare function initializeAnalytics(): void;
     `;
-		expect(containsGlobalDeclarations(code)).toBe(true);
+		const sourceFile = getSourceFile(code);
+		expect(containsGlobalDeclarations(sourceFile)).toBe(true);
 	});
 
 	it("returns false for standard module code", () => {
@@ -34,12 +37,13 @@ describe("containsGlobalDeclarations", () => {
         id: string;
       }
     `;
-		expect(containsGlobalDeclarations(code)).toBe(false);
+		const sourceFile = getSourceFile(code);
+		expect(containsGlobalDeclarations(sourceFile)).toBe(false);
 	});
 
 	it("returns false for empty source files", () => {
-		expect(containsGlobalDeclarations("")).toBe(false);
-		expect(containsGlobalDeclarations("\n  \n")).toBe(false);
+		expect(containsGlobalDeclarations(getSourceFile(""))).toBe(false);
+		expect(containsGlobalDeclarations(getSourceFile("\n  \n"))).toBe(false);
 	});
 
 	it("returns false for module files with top-level declare outside declare global", () => {
@@ -48,7 +52,8 @@ describe("containsGlobalDeclarations", () => {
       declare function localHelper(): void;
       declare const config: { debug: boolean };
     `;
-		expect(containsGlobalDeclarations(code)).toBe(false);
+		const sourceFile = getSourceFile(code);
+		expect(containsGlobalDeclarations(sourceFile)).toBe(false);
 	});
 
 	it('returns false for inline type annotations that reference "global" by name', () => {
@@ -56,6 +61,16 @@ describe("containsGlobalDeclarations", () => {
       import { globalState } from './store';
       const myVar: typeof globalState = { active: true };
     `;
-		expect(containsGlobalDeclarations(code)).toBe(false);
+		const sourceFile = getSourceFile(code);
+		expect(containsGlobalDeclarations(sourceFile)).toBe(false);
 	});
 });
+
+function getSourceFile(rawFileContent: string) {
+	return ts.createSourceFile(
+		"mayContainGlobals.ts",
+		rawFileContent,
+		ts.ScriptTarget.ESNext,
+		true,
+	);
+}
