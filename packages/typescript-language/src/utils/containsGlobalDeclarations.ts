@@ -4,18 +4,11 @@ import ts from "typescript";
  * Inspects top-level statements of a TS source file to determine
  * if it introduces or modifies entities in the global scope.
  */
-export function containsGlobalDeclarations(rawFileContent: string) {
-	const sourceFileNode = ts.createSourceFile(
-		"mayContainGlobals.ts",
-		rawFileContent,
-		ts.ScriptTarget.ESNext,
-		true,
-	);
-
+export function containsGlobalDeclarations(sourceFileNode: ts.SourceFile) {
 	const isModule = ts.isExternalModule(sourceFileNode);
 
 	return sourceFileNode.statements.some((statement) => {
-		// checks for 'declare global {}'
+		// Checks for 'declare global {}'
 		if (ts.isModuleDeclaration(statement) && statement.name.text === "global") {
 			return true;
 		}

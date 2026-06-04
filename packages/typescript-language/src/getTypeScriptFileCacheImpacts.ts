@@ -18,6 +18,6 @@ export function getTypeScriptFileCacheImpacts(
 				file.services.sourceFile,
 			),
 		],
-		invalidatesCache: containsGlobalDeclarations(file.about.sourceText),
+		invalidatesCache: containsGlobalDeclarations(file.services.sourceFile),
 	};
 }
