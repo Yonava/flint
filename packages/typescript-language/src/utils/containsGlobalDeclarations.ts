@@ -16,7 +16,7 @@ export function containsGlobalDeclarations(rawFileContent: string) {
 		true,
 	);
 
-	const isModule = sourceFileNode.externalModuleIndicator !== undefined;
+	const isModule = ts.isExternalModule(sourceFileNode);
 
 	return sourceFileNode.statements.some((statement) => {
 		// checks for 'declare global {}'
