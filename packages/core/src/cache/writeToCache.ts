@@ -27,6 +27,7 @@ export async function writeToCache(
 		if (fileResult.invalidatesCache) {
 			cacheInvalidatingFiles.push({
 				filePath,
+				// flint-disable-next-line performance/loopAwaits
 				touchTime: await host.getFileTouchTime(filePath),
 			});
 		}
