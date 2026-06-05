@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { containsGlobalDeclarations } from "./containsGlobalDeclarations.ts";
 
-describe("containsGlobalDeclarations", () => {
+describe(containsGlobalDeclarations, () => {
 	it("returns true for declare global blocks", () => {
 		const code = `
       import { Something } from 'some-module';
