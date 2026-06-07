@@ -7,7 +7,6 @@ import { cacheStorageSchema } from "./cacheSchema.ts";
 describe("cacheStorageSchema decoding", () => {
 	it("parses valid cache data", () => {
 		const validCache: CacheStorage = {
-			globalInvalidations: [],
 			configs: {
 				"flint.config.ts": 1_234_567_890,
 				"package.json": 1_234_567_890,
@@ -17,6 +16,7 @@ describe("cacheStorageSchema decoding", () => {
 					timestamp: 1_234_567_890,
 				},
 			},
+			globalInvalidations: [],
 		};
 
 		const result = z.safeDecode(cacheStorageSchema, JSON.stringify(validCache));
@@ -70,7 +70,6 @@ describe("cacheStorageSchema decoding", () => {
 
 	it("parses cache with optional file properties", () => {
 		const validCache: CacheStorage = {
-			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -79,6 +78,7 @@ describe("cacheStorageSchema decoding", () => {
 					timestamp: 123,
 				},
 			},
+			globalInvalidations: [],
 		};
 
 		const result = z.safeDecode(cacheStorageSchema, JSON.stringify(validCache));
@@ -88,7 +88,6 @@ describe("cacheStorageSchema decoding", () => {
 
 	it("parses cache with full file data including reports", () => {
 		const validCache: CacheStorage = {
-			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -111,6 +110,7 @@ describe("cacheStorageSchema decoding", () => {
 					timestamp: 123,
 				},
 			},
+			globalInvalidations: [],
 		};
 
 		const result = z.safeDecode(cacheStorageSchema, JSON.stringify(validCache));
@@ -120,7 +120,6 @@ describe("cacheStorageSchema decoding", () => {
 
 	it("parses cache with report containing optional fields", () => {
 		const validCache: CacheStorage = {
-			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -151,6 +150,7 @@ describe("cacheStorageSchema decoding", () => {
 					timestamp: 123,
 				},
 			},
+			globalInvalidations: [],
 		};
 
 		const result = z.safeDecode(cacheStorageSchema, JSON.stringify(validCache));
@@ -284,7 +284,6 @@ describe("cacheStorageSchema decoding", () => {
 describe("cacheStorageSchema", () => {
 	it("encodes valid cache data to JSON string", () => {
 		const validCache: CacheStorage = {
-			globalInvalidations: [],
 			configs: {
 				"flint.config.ts": 1_234_567_890,
 				"package.json": 1_234_567_890,
@@ -294,6 +293,7 @@ describe("cacheStorageSchema", () => {
 					timestamp: 1_234_567_890,
 				},
 			},
+			globalInvalidations: [],
 		};
 
 		const encoded = z.encode(cacheStorageSchema, validCache);
@@ -304,13 +304,13 @@ describe("cacheStorageSchema", () => {
 
 	it("decodes valid JSON string to cache data", () => {
 		const validCache: CacheStorage = {
-			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
 					timestamp: 123,
 				},
 			},
+			globalInvalidations: [],
 		};
 		const json = JSON.stringify(validCache);
 
@@ -360,7 +360,6 @@ describe("cacheStorageSchema", () => {
 
 	it("roundtrips cache data correctly", () => {
 		const original: CacheStorage = {
-			globalInvalidations: [],
 			configs: {
 				"flint.config.ts": 1_234_567_890,
 				"package.json": 1_234_567_890,
@@ -385,6 +384,7 @@ describe("cacheStorageSchema", () => {
 					timestamp: 1_234_567_890,
 				},
 			},
+			globalInvalidations: [],
 		};
 
 		const encoded = z.encode(cacheStorageSchema, original);
@@ -397,7 +397,6 @@ describe("cacheStorageSchema", () => {
 describe("toSerializableCacheStorage encoding", () => {
 	it("passes through cache with only SuggestionForFile suggestions", () => {
 		const cache: CacheStorage = {
-			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -427,6 +426,7 @@ describe("toSerializableCacheStorage encoding", () => {
 					timestamp: 123,
 				},
 			},
+			globalInvalidations: [],
 		};
 
 		const result = z.decode(
@@ -447,7 +447,6 @@ describe("toSerializableCacheStorage encoding", () => {
 
 	it("handles cache with no suggestions", () => {
 		const cache: CacheStorage = {
-			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -468,6 +467,7 @@ describe("toSerializableCacheStorage encoding", () => {
 					timestamp: 123,
 				},
 			},
+			globalInvalidations: [],
 		};
 
 		const result = z.decode(
@@ -482,13 +482,13 @@ describe("toSerializableCacheStorage encoding", () => {
 
 	it("handles cache with no reports", () => {
 		const cache: CacheStorage = {
-			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
 					timestamp: 123,
 				},
 			},
+			globalInvalidations: [],
 		};
 
 		const result = z.decode(
@@ -501,7 +501,6 @@ describe("toSerializableCacheStorage encoding", () => {
 
 	it("produces output that parses against the codec", () => {
 		const cache: CacheStorage = {
-			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -530,6 +529,7 @@ describe("toSerializableCacheStorage encoding", () => {
 					timestamp: 123,
 				},
 			},
+			globalInvalidations: [],
 		};
 
 		const serializable = z.decode(
