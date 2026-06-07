@@ -80,15 +80,15 @@ const fileCacheStorageSchema = z.object({
 	timestamp: z.number(),
 });
 
-const cacheInvalidatingFiles = z.object({
+const globalInvalidations = z.object({
 	filePath: z.string(),
 	touchTime: z.number(),
 });
 
 export const cacheStorageSchema = jsonCodec(
 	z.object({
-		cacheInvalidatingFiles: z.array(cacheInvalidatingFiles),
 		configs: z.record(z.string(), z.number()),
 		files: z.record(z.string(), fileCacheStorageSchema),
+		globalInvalidations: z.array(globalInvalidations),
 	}),
 );

@@ -78,7 +78,7 @@ export async function readFromCache(
 	for (const {
 		filePath,
 		touchTime: cachedTouchTime,
-	} of cache.cacheInvalidatingFiles) {
+	} of cache.globalInvalidations) {
 		// flint-disable-next-line performance/loopAwaits
 		const currentTouchTime = await host.getFileTouchTime(filePath);
 		if (currentTouchTime > cachedTouchTime) {

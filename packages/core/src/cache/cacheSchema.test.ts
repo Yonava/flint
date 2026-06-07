@@ -7,7 +7,7 @@ import { cacheStorageSchema } from "./cacheSchema.ts";
 describe("cacheStorageSchema decoding", () => {
 	it("parses valid cache data", () => {
 		const validCache: CacheStorage = {
-			cacheInvalidatingFiles: [],
+			globalInvalidations: [],
 			configs: {
 				"flint.config.ts": 1_234_567_890,
 				"package.json": 1_234_567_890,
@@ -70,7 +70,7 @@ describe("cacheStorageSchema decoding", () => {
 
 	it("parses cache with optional file properties", () => {
 		const validCache: CacheStorage = {
-			cacheInvalidatingFiles: [],
+			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -88,7 +88,7 @@ describe("cacheStorageSchema decoding", () => {
 
 	it("parses cache with full file data including reports", () => {
 		const validCache: CacheStorage = {
-			cacheInvalidatingFiles: [],
+			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -120,7 +120,7 @@ describe("cacheStorageSchema decoding", () => {
 
 	it("parses cache with report containing optional fields", () => {
 		const validCache: CacheStorage = {
-			cacheInvalidatingFiles: [],
+			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -284,7 +284,7 @@ describe("cacheStorageSchema decoding", () => {
 describe("cacheStorageSchema", () => {
 	it("encodes valid cache data to JSON string", () => {
 		const validCache: CacheStorage = {
-			cacheInvalidatingFiles: [],
+			globalInvalidations: [],
 			configs: {
 				"flint.config.ts": 1_234_567_890,
 				"package.json": 1_234_567_890,
@@ -304,7 +304,7 @@ describe("cacheStorageSchema", () => {
 
 	it("decodes valid JSON string to cache data", () => {
 		const validCache: CacheStorage = {
-			cacheInvalidatingFiles: [],
+			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -360,7 +360,7 @@ describe("cacheStorageSchema", () => {
 
 	it("roundtrips cache data correctly", () => {
 		const original: CacheStorage = {
-			cacheInvalidatingFiles: [],
+			globalInvalidations: [],
 			configs: {
 				"flint.config.ts": 1_234_567_890,
 				"package.json": 1_234_567_890,
@@ -397,7 +397,7 @@ describe("cacheStorageSchema", () => {
 describe("toSerializableCacheStorage encoding", () => {
 	it("passes through cache with only SuggestionForFile suggestions", () => {
 		const cache: CacheStorage = {
-			cacheInvalidatingFiles: [],
+			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -447,7 +447,7 @@ describe("toSerializableCacheStorage encoding", () => {
 
 	it("handles cache with no suggestions", () => {
 		const cache: CacheStorage = {
-			cacheInvalidatingFiles: [],
+			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -482,7 +482,7 @@ describe("toSerializableCacheStorage encoding", () => {
 
 	it("handles cache with no reports", () => {
 		const cache: CacheStorage = {
-			cacheInvalidatingFiles: [],
+			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -501,7 +501,7 @@ describe("toSerializableCacheStorage encoding", () => {
 
 	it("produces output that parses against the codec", () => {
 		const cache: CacheStorage = {
-			cacheInvalidatingFiles: [],
+			globalInvalidations: [],
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
