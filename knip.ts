@@ -56,16 +56,11 @@ export default {
 			project: ["src/**/*.ts!", "!src/rules/ruleTester.ts!"],
 		},
 		"packages/plugin-flint": {
-			ignoreDependencies: [
-				// It's bugging IDK.
-				"@flint.fyi/rule-tester!",
-			],
 			project: ["src/**/*.ts!", "!src/rules/ruleTester.ts!"],
 		},
 		"packages/site": {
 			ignoreDependencies: [
 				// Needed for Twoslash
-				"@flint.fyi/core",
 				"@flint.fyi/typescript-language",
 				"zod",
 
@@ -80,7 +75,11 @@ export default {
 			project: ["src/**/*.ts!", "!src/rules/ruleTester.ts!"],
 		},
 		"packages/ts": {
-			project: ["src/**/*.ts!", "!src/rules/ruleTester.ts!"],
+			project: [
+				"src/**/*.ts!",
+				"!src/typescript.d.ts",
+				"!src/rules/ruleTester.ts!",
+			],
 		},
 		"packages/vitest": {
 			project: ["src/**/*.ts!", "!src/ruleTester.ts!"],
@@ -98,9 +97,6 @@ export default {
 		},
 		"packages/vue-language": {
 			ignoreDependencies: [
-				// It's bugging IDK.
-				"@flint.fyi/core!",
-
 				// https://github.com/webpro-nl/knip/issues/248
 				"@volar/language-core!",
 			],

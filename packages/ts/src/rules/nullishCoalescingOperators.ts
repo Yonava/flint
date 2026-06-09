@@ -246,6 +246,25 @@ function getComparisonOperator(
 	}
 }
 
+function getIfStatementNullishCheckValue(node: AST.IfStatement) {
+	switch (node.expression.kind) {
+		case ts.SyntaxKind.BinaryExpression:
+			if (isNullLikeComparison(node.expression)) {
+				return extractValueFromComparison(node.expression).value ?? undefined;
+			}
+			return;
+
+		case ts.SyntaxKind.PrefixUnaryExpression:
+			if (node.expression.operator === ts.SyntaxKind.ExclamationToken) {
+				return node.expression.operand;
+			}
+			return;
+
+		default:
+			return;
+	}
+}
+
 function getTypeFlags(type: ts.Type): ts.TypeFlags {
 	let flags = 0;
 	for (const constituent of tsutils.unionConstituents(type)) {
@@ -318,19 +337,6 @@ function isFalsyLiteralType(part: ts.Type) {
 	}
 
 	return false;
-}
-
-function isIfStatementNullishCheck(node: AST.IfStatement) {
-	switch (node.expression.kind) {
-		case ts.SyntaxKind.BinaryExpression:
-			return isNullLikeComparison(node.expression);
-
-		case ts.SyntaxKind.PrefixUnaryExpression:
-			return node.expression.operator === ts.SyntaxKind.ExclamationToken;
-
-		default:
-			return false;
-	}
 }
 
 function isMixedLogicalExpression(node: AST.BinaryExpression) {
@@ -583,6 +589,18 @@ export default ruleCreator.createRule(typescriptLanguage, {
 			return { range, text: `${leftText} ?? ${getText(alternate)}` };
 		}
 
+		function createNullishAssignmentFix(
+			left: AST.AnyNode,
+			right: AST.AnyNode,
+			sourceFile: AST.SourceFile,
+			range: CharacterReportRange,
+		) {
+			const getText = (node: AST.AnyNode) =>
+				sourceFile.text.substring(node.getStart(sourceFile), node.getEnd());
+
+			return { range, text: `${getText(left)} ??= ${getText(right)};` };
+		}
+
 		return {
 			visitors: {
 				BinaryExpression: (node, { options, sourceFile, typeChecker }) => {
@@ -650,10 +668,11 @@ export default ruleCreator.createRule(typescriptLanguage, {
 					});
 				},
 				IfStatement: (node, { options, sourceFile, typeChecker }) => {
+					const checkedValue = getIfStatementNullishCheckValue(node);
 					if (
 						options.ignoreIfStatements ||
 						node.elseStatement ||
-						!isIfStatementNullishCheck(node)
+						!checkedValue
 					) {
 						return;
 					}
@@ -661,6 +680,11 @@ export default ruleCreator.createRule(typescriptLanguage, {
 					const assignmentExpression = extractAssignmentFromIfStatement(node);
 					if (
 						!assignmentExpression ||
+						!hasSameTokens(
+							assignmentExpression.left,
+							checkedValue,
+							sourceFile,
+						) ||
 						shouldIgnoreNode(
 							assignmentExpression.left,
 							options.ignorePrimitives,
@@ -673,7 +697,7 @@ export default ruleCreator.createRule(typescriptLanguage, {
 					const range = getTSNodeRange(node, sourceFile);
 
 					context.report({
-						fix: createNullishNodesFix(
+						fix: createNullishAssignmentFix(
 							assignmentExpression.left,
 							assignmentExpression.right,
 							sourceFile,

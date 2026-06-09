@@ -1,22 +1,19 @@
-import {
-	getJsonNodeRange,
-	type JsonSourceFile,
-} from "@flint.fyi/json-language";
-import type { AST } from "@flint.fyi/typescript-language";
+import type { ArrayNode, ElementNode } from "@humanwhocodes/momoa";
+
+import { getJsonNodeRange } from "@flint.fyi/json-language/new";
 
 export function removeArrayElement(
-	sourceFile: JsonSourceFile,
-	element: AST.Expression,
-	arrayNode: AST.ArrayLiteralExpression,
+	elementNode: ElementNode,
+	arrayNode: ArrayNode,
 ) {
 	if (arrayNode.elements.length === 1) {
 		return {
-			range: getJsonNodeRange(arrayNode, sourceFile),
+			range: getJsonNodeRange(arrayNode),
 			text: "[]",
 		};
 	}
 
-	const index = arrayNode.elements.indexOf(element);
+	const index = arrayNode.elements.indexOf(elementNode);
 	if (index === -1) {
 		throw new Error("Node is not a child of the parent array.");
 	}
@@ -27,21 +24,26 @@ export function removeArrayElement(
 			? arrayNode.elements[index + 1]
 			: undefined;
 
+	const { begin: elementBegin, end: elementEnd } = getJsonNodeRange(
+		elementNode.value,
+	);
 	if (next) {
+		const { begin: nextBegin } = getJsonNodeRange(next.value);
 		return {
 			range: {
-				begin: element.getStart(sourceFile),
-				end: next.getStart(sourceFile),
+				begin: elementBegin,
+				end: nextBegin,
 			},
 			text: "",
 		};
 	}
 
 	if (previous) {
+		const { end: previousEnd } = getJsonNodeRange(previous.value);
 		return {
 			range: {
-				begin: previous.end,
-				end: element.end,
+				begin: previousEnd,
+				end: elementEnd,
 			},
 			text: "",
 		};

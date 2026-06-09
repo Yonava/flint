@@ -1,4 +1,4 @@
-import { jsonLanguage } from "@flint.fyi/json-language";
+import { jsonLanguage } from "@flint.fyi/json-language/new";
 
 import { getPackagePropertyOfName } from "../getPackagePropertyOfName.ts";
 import { ruleCreator } from "../ruleCreator.ts";
@@ -21,7 +21,7 @@ export default ruleCreator.createRule(jsonLanguage, {
 	setup(context) {
 		return {
 			visitors: {
-				JsonSourceFile: (node) => {
+				Document: (node) => {
 					if (!getPackagePropertyOfName(node, "private")) {
 						context.report({
 							message: "missing",

@@ -1,17 +1,14 @@
-import { SyntaxKind } from "typescript";
-
-import type { JsonSourceFile } from "@flint.fyi/json-language";
-import type { AST } from "@flint.fyi/typescript-language";
+import type { DocumentNode, MemberNode } from "@humanwhocodes/momoa";
 
 import { getPackageProperties } from "./getPackageProperties.ts";
 
 export function getPackagePropertiesOfNames<T extends string[]>(
-	sourceFile: JsonSourceFile,
+	rootNode: DocumentNode,
 	propertyNames: T,
-): Partial<Record<T[number], AST.PropertyAssignment>> {
-	const result: Partial<Record<T[number], AST.PropertyAssignment>> = {};
+): Partial<Record<T[number], MemberNode>> {
+	const result: Partial<Record<T[number], MemberNode>> = {};
 
-	const properties = getPackageProperties(sourceFile);
+	const properties = getPackageProperties(rootNode);
 	if (!properties) {
 		return result;
 	}
@@ -24,11 +21,10 @@ export function getPackagePropertiesOfNames<T extends string[]>(
 
 	for (const property of properties) {
 		if (
-			property.kind === SyntaxKind.PropertyAssignment &&
-			property.name.kind === SyntaxKind.StringLiteral &&
-			isPropertyName(property.name.text)
+			property.name.type === "String" &&
+			isPropertyName(property.name.value)
 		) {
-			result[property.name.text] = property;
+			result[property.name.value] = property;
 		}
 	}
 	return result;

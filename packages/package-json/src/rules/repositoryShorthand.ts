@@ -1,7 +1,4 @@
-import ts from "typescript";
-
-import { jsonLanguage } from "@flint.fyi/json-language";
-import { getTSNodeRange } from "@flint.fyi/typescript-language";
+import { getJsonNodeRange, jsonLanguage } from "@flint.fyi/json-language/new";
 
 import { getPackagePropertyOfName } from "../getPackagePropertyOfName.ts";
 import { ruleCreator } from "../ruleCreator.ts";
@@ -63,17 +60,14 @@ export default ruleCreator.createRule(jsonLanguage, {
 	setup(context) {
 		return {
 			visitors: {
-				JsonSourceFile: (node) => {
+				Document: (node) => {
 					const property = getPackagePropertyOfName(node, "repository");
-					if (
-						property?.kind !== ts.SyntaxKind.PropertyAssignment ||
-						property.initializer.kind !== ts.SyntaxKind.StringLiteral
-					) {
+					if (property?.value.type !== "String") {
 						return;
 					}
 
-					const range = getTSNodeRange(property.initializer, node);
-					const url = createUrl(property.initializer.text);
+					const range = getJsonNodeRange(property.value);
+					const url = createUrl(property.value.value);
 
 					context.report({
 						fix: url

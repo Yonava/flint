@@ -5447,7 +5447,8 @@
 		"flint": {
 			"name": "filesRedundancy",
 			"plugin": "package-json",
-			"preset": "logical"
+			"preset": "logical",
+			"status": "implemented"
 		}
 	},
 	{
@@ -5626,6 +5627,19 @@
 			"plugin": "package-json",
 			"preset": "logical",
 			"status": "implemented"
+		}
+	},
+	{
+		"eslint": [
+			{
+				"name": "package-json/no-local-dependencies",
+				"url": "https://eslint-plugin-package-json.dev/rules/no-local-dependencies/"
+			}
+		],
+		"flint": {
+			"name": "localDependencies",
+			"plugin": "package-json",
+			"preset": "logical"
 		}
 	},
 	{
@@ -5962,7 +5976,8 @@
 		"flint": {
 			"name": "propertyOrder",
 			"plugin": "package-json",
-			"preset": "sorting"
+			"preset": "sorting",
+			"status": "implemented"
 		}
 	},
 	{
@@ -18885,7 +18900,8 @@
 		],
 		"flint": {
 			"name": "restrictedImports",
-			"plugin": "ts"
+			"plugin": "ts",
+			"status": "implemented"
 		},
 		"oxlint": [
 			{
