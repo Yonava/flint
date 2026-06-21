@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import z from "zod/v4";
 
-import type { CacheStorage } from "../types/cache.ts";
-import { cacheStorageSchema } from "./cacheSchema.ts";
+import { cacheStorageSchema } from "./compaction/compactCacheSchema.ts";
+import type { CompactCacheStorage } from "./compaction/types.ts";
 
 describe("cacheStorageSchema decoding", () => {
 	it("parses valid cache data", () => {
-		const validCache: CacheStorage = {
+		const validCache: CompactCacheStorage = {
 			configs: {
 				"flint.config.ts": 1_234_567_890,
 				"package.json": 1_234_567_890,
@@ -17,6 +17,7 @@ describe("cacheStorageSchema decoding", () => {
 				},
 			},
 			globalInvalidations: [],
+			messageStrings: [],
 		};
 
 		const result = z.safeDecode(cacheStorageSchema, JSON.stringify(validCache));
@@ -27,6 +28,7 @@ describe("cacheStorageSchema decoding", () => {
 	it("rejects cache missing configs", () => {
 		const invalidCache = {
 			files: {},
+			messageStrings: [],
 		};
 
 		const result = z.safeDecode(
@@ -40,6 +42,21 @@ describe("cacheStorageSchema decoding", () => {
 	it("rejects cache missing files", () => {
 		const invalidCache = {
 			configs: {},
+			messageStrings: [],
+		};
+
+		const result = z.safeDecode(
+			cacheStorageSchema,
+			JSON.stringify(invalidCache),
+		);
+
+		expect(result.success).toBe(false);
+	});
+
+	it("rejects cache missing messageStrings", () => {
+		const invalidCache = {
+			configs: {},
+			files: {},
 		};
 
 		const result = z.safeDecode(
@@ -58,6 +75,7 @@ describe("cacheStorageSchema decoding", () => {
 					timestamp: "not-a-number",
 				},
 			},
+			messageStrings: [],
 		};
 
 		const result = z.safeDecode(
@@ -69,7 +87,7 @@ describe("cacheStorageSchema decoding", () => {
 	});
 
 	it("parses cache with optional file properties", () => {
-		const validCache: CacheStorage = {
+		const validCache: CompactCacheStorage = {
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -79,6 +97,7 @@ describe("cacheStorageSchema decoding", () => {
 				},
 			},
 			globalInvalidations: [],
+			messageStrings: [],
 		};
 
 		const result = z.safeDecode(cacheStorageSchema, JSON.stringify(validCache));
@@ -87,7 +106,8 @@ describe("cacheStorageSchema decoding", () => {
 	});
 
 	it("parses cache with full file data including reports", () => {
-		const validCache: CacheStorage = {
+		const messageStrings = ["Test error", "More info", "Try this"];
+		const validCache: CompactCacheStorage = {
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -99,9 +119,9 @@ describe("cacheStorageSchema decoding", () => {
 						{
 							about: { id: "test-rule" },
 							message: {
-								primary: "Test error",
-								secondary: [],
-								suggestions: [],
+								primary: 0,
+								secondary: [1],
+								suggestions: [2],
 							},
 							range: {
 								begin: { column: 0, line: 0, raw: 0 },
@@ -113,6 +133,7 @@ describe("cacheStorageSchema decoding", () => {
 				},
 			},
 			globalInvalidations: [],
+			messageStrings,
 		};
 
 		const result = z.safeDecode(cacheStorageSchema, JSON.stringify(validCache));
@@ -134,7 +155,8 @@ describe("cacheStorageSchema decoding", () => {
 	});
 
 	it("parses cache with report containing optional fields", () => {
-		const validCache: CacheStorage = {
+		const messageStrings = ["Test error", "More info", "Try this"];
+		const validCache: CompactCacheStorage = {
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -145,9 +167,9 @@ describe("cacheStorageSchema decoding", () => {
 							dependencies: ["src/other.ts"],
 							fix: [{ range: { begin: 0, end: 5 }, text: "fixed" }],
 							message: {
-								primary: "Test error",
-								secondary: ["More info"],
-								suggestions: ["Try this"],
+								primary: 0,
+								secondary: [1],
+								suggestions: [2],
 							},
 							range: {
 								begin: { column: 0, line: 0, raw: 0 },
@@ -166,6 +188,7 @@ describe("cacheStorageSchema decoding", () => {
 				},
 			},
 			globalInvalidations: [],
+			messageStrings,
 		};
 
 		const result = z.safeDecode(cacheStorageSchema, JSON.stringify(validCache));
@@ -173,7 +196,7 @@ describe("cacheStorageSchema decoding", () => {
 		expect(result.success).toBe(true);
 	});
 
-	it("rejects report with invalid message structure", () => {
+	it("rejects report with string message (old format)", () => {
 		const invalidCache = {
 			configs: { "package.json": 123 },
 			files: {
@@ -183,7 +206,8 @@ describe("cacheStorageSchema decoding", () => {
 							about: { id: "test-rule" },
 							message: {
 								primary: "Test error",
-								// missing secondary and suggestions
+								secondary: [],
+								suggestions: [],
 							},
 							range: {
 								begin: { column: 0, line: 0, raw: 0 },
@@ -194,6 +218,7 @@ describe("cacheStorageSchema decoding", () => {
 					timestamp: 123,
 				},
 			},
+			messageStrings: [],
 		};
 
 		const result = z.safeDecode(
@@ -220,6 +245,7 @@ describe("cacheStorageSchema decoding", () => {
 		const invalidCache = {
 			configs: { "package.json": "not-a-number" },
 			files: {},
+			messageStrings: [],
 		};
 
 		const result = z.safeDecode(
@@ -239,7 +265,7 @@ describe("cacheStorageSchema decoding", () => {
 						{
 							about: { id: "test-rule" },
 							message: {
-								primary: "Error",
+								primary: 0,
 								secondary: [],
 								suggestions: [],
 							},
@@ -252,6 +278,7 @@ describe("cacheStorageSchema decoding", () => {
 					timestamp: 123,
 				},
 			},
+			messageStrings: ["Test error"],
 		};
 
 		const result = z.safeDecode(
@@ -272,7 +299,7 @@ describe("cacheStorageSchema decoding", () => {
 							about: { id: "test-rule" },
 							data: { nested: { object: true } },
 							message: {
-								primary: "Error",
+								primary: 0,
 								secondary: [],
 								suggestions: [],
 							},
@@ -285,6 +312,7 @@ describe("cacheStorageSchema decoding", () => {
 					timestamp: 123,
 				},
 			},
+			messageStrings: ["Test error"],
 		};
 
 		const result = z.safeDecode(
@@ -298,7 +326,7 @@ describe("cacheStorageSchema decoding", () => {
 
 describe("cacheStorageSchema", () => {
 	it("encodes valid cache data to JSON string", () => {
-		const validCache: CacheStorage = {
+		const validCache: CompactCacheStorage = {
 			configs: {
 				"flint.config.ts": 1_234_567_890,
 				"package.json": 1_234_567_890,
@@ -309,6 +337,7 @@ describe("cacheStorageSchema", () => {
 				},
 			},
 			globalInvalidations: [],
+			messageStrings: [],
 		};
 
 		const encoded = z.encode(cacheStorageSchema, validCache);
@@ -318,7 +347,7 @@ describe("cacheStorageSchema", () => {
 	});
 
 	it("decodes valid JSON string to cache data", () => {
-		const validCache: CacheStorage = {
+		const validCache: CompactCacheStorage = {
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -326,6 +355,7 @@ describe("cacheStorageSchema", () => {
 				},
 			},
 			globalInvalidations: [],
+			messageStrings: [],
 		};
 		const json = JSON.stringify(validCache);
 
@@ -338,6 +368,7 @@ describe("cacheStorageSchema", () => {
 		const invalidCache = {
 			configs: "invalid",
 			files: {},
+			messageStrings: [],
 		};
 
 		const result = z.safeEncode(
@@ -363,6 +394,7 @@ describe("cacheStorageSchema", () => {
 		const validJsonInvalidSchema = JSON.stringify({
 			configs: "not-a-record",
 			files: {},
+			messageStrings: [],
 		});
 
 		const result = z.safeDecode(
@@ -374,7 +406,8 @@ describe("cacheStorageSchema", () => {
 	});
 
 	it("roundtrips cache data correctly", () => {
-		const original: CacheStorage = {
+		const messageStrings = ["Error message", "More info", "Test error"];
+		const original: CompactCacheStorage = {
 			configs: {
 				"flint.config.ts": 1_234_567_890,
 				"package.json": 1_234_567_890,
@@ -389,8 +422,8 @@ describe("cacheStorageSchema", () => {
 						{
 							about: { id: "test-rule" },
 							message: {
-								primary: "Test error",
-								secondary: ["More info"],
+								primary: 2,
+								secondary: [1],
 								suggestions: [],
 							},
 							range: {
@@ -403,6 +436,7 @@ describe("cacheStorageSchema", () => {
 				},
 			},
 			globalInvalidations: [],
+			messageStrings,
 		};
 
 		const encoded = z.encode(cacheStorageSchema, original);
@@ -414,7 +448,7 @@ describe("cacheStorageSchema", () => {
 
 describe("toSerializableCacheStorage encoding", () => {
 	it("passes through cache with only SuggestionForFile suggestions", () => {
-		const cache: CacheStorage = {
+		const cache: CompactCacheStorage = {
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -422,7 +456,7 @@ describe("toSerializableCacheStorage encoding", () => {
 						{
 							about: { id: "test-rule" },
 							message: {
-								primary: "Error",
+								primary: 0,
 								secondary: [],
 								suggestions: [],
 							},
@@ -445,6 +479,7 @@ describe("toSerializableCacheStorage encoding", () => {
 				},
 			},
 			globalInvalidations: [],
+			messageStrings: ["Error"],
 		};
 
 		const result = z.decode(
@@ -464,7 +499,7 @@ describe("toSerializableCacheStorage encoding", () => {
 	});
 
 	it("handles cache with no suggestions", () => {
-		const cache: CacheStorage = {
+		const cache: CompactCacheStorage = {
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -472,7 +507,7 @@ describe("toSerializableCacheStorage encoding", () => {
 						{
 							about: { id: "test-rule" },
 							message: {
-								primary: "Error",
+								primary: 0,
 								secondary: [],
 								suggestions: [],
 							},
@@ -486,6 +521,7 @@ describe("toSerializableCacheStorage encoding", () => {
 				},
 			},
 			globalInvalidations: [],
+			messageStrings: ["Error"],
 		};
 
 		const result = z.decode(
@@ -499,7 +535,7 @@ describe("toSerializableCacheStorage encoding", () => {
 	});
 
 	it("handles cache with no reports", () => {
-		const cache: CacheStorage = {
+		const cache: CompactCacheStorage = {
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -507,6 +543,7 @@ describe("toSerializableCacheStorage encoding", () => {
 				},
 			},
 			globalInvalidations: [],
+			messageStrings: [],
 		};
 
 		const result = z.decode(
@@ -518,7 +555,7 @@ describe("toSerializableCacheStorage encoding", () => {
 	});
 
 	it("produces output that parses against the codec", () => {
-		const cache: CacheStorage = {
+		const cache: CompactCacheStorage = {
 			configs: { "package.json": 123 },
 			files: {
 				"src/index.ts": {
@@ -526,7 +563,7 @@ describe("toSerializableCacheStorage encoding", () => {
 						{
 							about: { id: "test-rule" },
 							message: {
-								primary: "Error",
+								primary: 0,
 								secondary: [],
 								suggestions: [],
 							},
@@ -536,7 +573,6 @@ describe("toSerializableCacheStorage encoding", () => {
 							},
 							suggestions: [
 								{ id: "fix-1", range: { begin: 0, end: 5 }, text: "fixed" },
-								// This would fail validation if not filtered
 								{
 									files: { "other.ts": [] },
 									id: "multi-fix",
@@ -548,6 +584,7 @@ describe("toSerializableCacheStorage encoding", () => {
 				},
 			},
 			globalInvalidations: [],
+			messageStrings: ["Error"],
 		};
 
 		const serializable = z.decode(

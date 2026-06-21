@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: Use Zod Mini in core package
 import z from "zod/v4";
 
-import { jsonCodec } from "../utils/codecs.ts";
+import { jsonCodec } from "../../utils/codecs.ts";
 
 const characterReportRangeSchema = z.object({
 	begin: z.number(),
@@ -43,9 +43,9 @@ const suggestionSchema = z.union([
 ]);
 
 const reportMessageDataSchema = z.object({
-	primary: z.string(),
-	secondary: z.array(z.string()),
-	suggestions: z.array(z.string()),
+	primary: z.number().int().nonnegative(),
+	secondary: z.array(z.number().int().nonnegative()),
+	suggestions: z.array(z.number().int().nonnegative()),
 });
 
 const baseAboutSchema = z.object({
@@ -91,5 +91,6 @@ export const cacheStorageSchema = jsonCodec(
 		configs: z.record(z.string(), z.number()),
 		files: z.record(z.string(), fileCacheStorageSchema),
 		globalInvalidations: z.array(globalInvalidations),
+		messageStrings: z.array(z.string()),
 	}),
 );

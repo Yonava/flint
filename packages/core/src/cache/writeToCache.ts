@@ -5,7 +5,8 @@ import omitEmpty from "omit-empty";
 import type { CacheStorage, GlobalInvalidation } from "../types/cache.ts";
 import type { LinterHost } from "../types/host.ts";
 import type { LintResults } from "../types/linting.ts";
-import { cacheStorageSchema } from "./cacheSchema.ts";
+import { compactCache } from "./compaction/compactCache.ts";
+import { cacheStorageSchema } from "./compaction/compactCacheSchema.ts";
 import { getCacheFilePath } from "./getCacheFilePath.ts";
 
 const log = debugForFile(import.meta.filename);
@@ -36,7 +37,7 @@ export async function writeToCache(
 		}
 	}
 
-	const storage: CacheStorage = {
+	const cacheStorage: CacheStorage = {
 		configs: {
 			// Fall back to 0 (not the current time) when the host can't report a
 			// touch time: a fabricated "now" would mask later changes, whereas 0
@@ -60,15 +61,15 @@ export async function writeToCache(
 			),
 			...(lintResults.cached &&
 				Object.fromEntries(
-					Array.from(lintResults.cached).filter(([filePath]) =>
-						lintResults.allFilePaths.has(filePath),
-					),
+					Array.from(lintResults.cached)
+						.filter(([filePath]) => lintResults.allFilePaths.has(filePath))
+						.map(([filePath, cached]) => [filePath, cached]),
 				)),
 		},
 		globalInvalidations,
 	};
 
-	const encoded = cacheStorageSchema.safeEncode(storage);
+	const encoded = cacheStorageSchema.safeEncode(compactCache(cacheStorage));
 	if (!encoded.success) {
 		log("Failed to encode cache data: %s", encoded.error.message);
 		return;

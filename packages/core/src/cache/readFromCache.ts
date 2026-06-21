@@ -5,7 +5,9 @@ import { nullThrows, pathKey } from "@flint.fyi/utils";
 
 import type { FileCacheStorage } from "../types/cache.ts";
 import type { LinterHost } from "../types/host.ts";
-import { cacheStorageSchema } from "./cacheSchema.ts";
+import { cacheStorageSchema } from "./compaction/compactCacheSchema.ts";
+import { expandCache } from "./compaction/expandCache.ts";
+import type { CompactCacheStorage } from "./compaction/types.ts";
 import { getCacheFilePath } from "./getCacheFilePath.ts";
 
 const log = debugForFile(import.meta.filename);
@@ -34,7 +36,18 @@ export async function readFromCache(
 		return undefined;
 	}
 
-	const cache = decodeResult.data;
+	// Data already schema validated just above
+	const compactCache = decodeResult.data as CompactCacheStorage;
+
+	const cache = expandCache(compactCache);
+	if (!cache) {
+		log(
+			"Linting all %d file path(s) due to unresolvable message string index in cache.",
+			allFilePaths.size,
+		);
+		return undefined;
+	}
+
 	const caseSensitiveFS = host.isCaseSensitiveFS();
 	const allFilePathKeys = new Set(
 		Array.from(allFilePaths, (filePath) => pathKey(filePath, caseSensitiveFS)),
@@ -69,10 +82,7 @@ export async function readFromCache(
 		}
 	}
 
-	const cached = new Map(Object.entries(cache.files)) as Map<
-		string,
-		FileCacheStorage
-	>;
+	const cached = new Map(Object.entries(cache.files));
 	const filePathsToLint = new Set<string>();
 
 	for (const {
