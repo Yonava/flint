@@ -77,6 +77,8 @@ export interface RuleReport<Message extends string = string> {
  * Full data for a report message to be displayed to users.
  */
 export interface ReportMessageData {
+	id: string;
+
 	/**
 	 * A single sentence explaining what's wrong.
 	 */

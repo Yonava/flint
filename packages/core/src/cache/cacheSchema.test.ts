@@ -99,6 +99,7 @@ describe("cacheStorageSchema decoding", () => {
 						{
 							about: { id: "test-rule" },
 							message: {
+								id: "id",
 								primary: "Test error",
 								secondary: [],
 								suggestions: [],
@@ -145,6 +146,7 @@ describe("cacheStorageSchema decoding", () => {
 							dependencies: ["src/other.ts"],
 							fix: [{ range: { begin: 0, end: 5 }, text: "fixed" }],
 							message: {
+								id: "id",
 								primary: "Test error",
 								secondary: ["More info"],
 								suggestions: ["Try this"],
@@ -389,6 +391,7 @@ describe("cacheStorageSchema", () => {
 						{
 							about: { id: "test-rule" },
 							message: {
+								id: "id",
 								primary: "Test error",
 								secondary: ["More info"],
 								suggestions: [],
@@ -422,6 +425,7 @@ describe("toSerializableCacheStorage encoding", () => {
 						{
 							about: { id: "test-rule" },
 							message: {
+								id: "id",
 								primary: "Error",
 								secondary: [],
 								suggestions: [],
@@ -472,6 +476,7 @@ describe("toSerializableCacheStorage encoding", () => {
 						{
 							about: { id: "test-rule" },
 							message: {
+								id: "id",
 								primary: "Error",
 								secondary: [],
 								suggestions: [],
@@ -526,6 +531,7 @@ describe("toSerializableCacheStorage encoding", () => {
 						{
 							about: { id: "test-rule" },
 							message: {
+								id: "id",
 								primary: "Error",
 								secondary: [],
 								suggestions: [],

@@ -22,6 +22,7 @@ function createReport(forLine: number, id: string) {
 	return {
 		about: { id },
 		message: {
+			id: "id",
 			primary: "",
 			secondary: [],
 			suggestions: [],

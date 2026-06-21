@@ -4,6 +4,7 @@ import z from "zod/v4";
 import { createLanguage } from "../languages/createLanguage.ts";
 import { RuleCreator } from "../rules/RuleCreator.ts";
 import type { AnyLanguage } from "../types/languages.ts";
+import type { ReportMessageData } from "../types/reports.ts";
 import { createPlugin } from "./createPlugin.ts";
 
 const stubLanguage = createLanguage({
@@ -12,7 +13,9 @@ const stubLanguage = createLanguage({
 	runFileVisitors: vi.fn(),
 });
 
-const stubMessages = { "": { primary: "", secondary: [], suggestions: [] } };
+const stubMessages: Record<string, ReportMessageData> = {
+	id: { id: "id", primary: "", secondary: [], suggestions: [] },
+};
 
 const ruleCreator = new RuleCreator({
 	docs: (ruleId) => `https://flint.fyi/rules/stub/${ruleId.toLowerCase()}`,

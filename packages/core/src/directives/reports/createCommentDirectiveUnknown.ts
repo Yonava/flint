@@ -1,14 +1,18 @@
-import type { NormalizedReportRangeObject } from "../../types/reports.ts";
+import type {
+	FileReport,
+	NormalizedReportRangeObject,
+} from "../../types/reports.ts";
 
 export function createCommentDirectiveUnknown(
 	type: string,
 	range: NormalizedReportRangeObject,
-) {
+): FileReport {
 	return {
 		about: {
 			id: "commentDirectiveUnknown",
 		},
 		message: {
+			id: "commentDirectiveUnknown",
 			primary: `Unknown comment directive type: "${type}".`,
 			secondary: ["TODO"],
 			suggestions: ["TODO"],

@@ -6,10 +6,13 @@ import { createLanguage } from "../languages/createLanguage.ts";
 import { RuleCreator } from "../rules/RuleCreator.ts";
 import type { FileCacheStorage } from "../types/cache.ts";
 import type { FileAboutData } from "../types/languages.ts";
+import type { ReportMessageData } from "../types/reports.ts";
 import type { AnyRule } from "../types/rules.ts";
 import { collectLanguageFilesByFilePath } from "./collectLanguageFilesByFilePath.ts";
 
-const messages = { "": { primary: "", secondary: [], suggestions: [] } };
+const messages: Record<string, ReportMessageData> = {
+	id: { id: "id", primary: "", secondary: [], suggestions: [] },
+};
 const ruleCreator = new RuleCreator({
 	docs: (ruleId) => `https://example.com/${ruleId}`,
 	pluginId: "test",

@@ -1,7 +1,9 @@
 import type { CommentDirective } from "../../types/directives.ts";
 import type { FileReport } from "../../types/reports.ts";
 
-export function createCommentDirectiveUnused(directive: CommentDirective) {
+export function createCommentDirectiveUnused(
+	directive: CommentDirective,
+): FileReport {
 	const selectionsText =
 		directive.selections.length === 1
 			? `"${directive.selections[0]}"`
@@ -12,6 +14,7 @@ export function createCommentDirectiveUnused(directive: CommentDirective) {
 			id: "commentDirectiveUnused",
 		},
 		message: {
+			id: "commentDirectiveUnused",
 			primary: `The flint-${directive.type} comment directive selecting ${selectionsText} did not match any reports.`,
 			secondary: [
 				"This directive may be unnecessary if it's not suppressing any linting errors.",
@@ -23,5 +26,5 @@ export function createCommentDirectiveUnused(directive: CommentDirective) {
 			],
 		},
 		range: directive.range,
-	} satisfies FileReport;
+	};
 }
