@@ -78,7 +78,11 @@ export async function runConfig(
 
 	// 5. Write the results to cache, then return them! We did it!
 	const ruleCount = rulesFilesAndOptionsByRule.size;
-	const lintResults = { allFilePaths, cached, filesResults, ruleCount };
+	const lintResults: LintResults = {
+		allFilePaths,
+		filesResults,
+		ruleCount,
+	};
 
 	if (!skipCacheWrite) {
 		await writeToCache(
