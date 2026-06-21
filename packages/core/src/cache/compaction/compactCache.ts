@@ -59,8 +59,8 @@ function compactMessage(
 	message: ReportMessageData,
 	stringIndex: Map<string, number>,
 ): CompactReportMessageData {
-	// stringIndex is built from the same messages so -1 should never occur, but if it does an
-	// out-of-bounds index guarantees a cache bust on read
+	// stringIndex is built from the same messages so -1 should never occur. If it does,
+	// nonnegative() in the schema rejects the encode and writeToCache skips the write.
 	return {
 		primary: stringIndex.get(message.primary) ?? -1,
 		secondary: message.secondary.map((s) => stringIndex.get(s) ?? -1),
@@ -72,10 +72,7 @@ function compactReports(
 	reports: FileReport[] | undefined,
 	stringIndex: Map<string, number>,
 ): CompactFileReport[] | undefined {
-	if (!reports?.length) {
-		return undefined;
-	}
-	return reports.map((report) => ({
+	return reports?.map((report) => ({
 		...report,
 		message: compactMessage(report.message, stringIndex),
 	}));
