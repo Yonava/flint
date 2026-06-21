@@ -37,7 +37,7 @@ export async function writeToCache(
 		}
 	}
 
-	const cacheStorage: CacheStorage = {
+	const cache: CacheStorage = {
 		configs: {
 			// Fall back to 0 (not the current time) when the host can't report a
 			// touch time: a fabricated "now" would mask later changes, whereas 0
@@ -69,7 +69,7 @@ export async function writeToCache(
 		globalInvalidations,
 	};
 
-	const encoded = cacheStorageSchema.safeEncode(compactCache(cacheStorage));
+	const encoded = cacheStorageSchema.safeEncode(compactCache(cache));
 	if (!encoded.success) {
 		log("Failed to encode cache data: %s", encoded.error.message);
 		return;
