@@ -10,7 +10,7 @@ export interface FileResults {
 
 export interface LintResults {
 	allFilePaths: Set<string>;
-	filesResults: Map<string, FinalizedFileResults>;
+	allFileResults: Map<string, FinalizedFileResults>;
 	ruleCount: number;
 }
 
