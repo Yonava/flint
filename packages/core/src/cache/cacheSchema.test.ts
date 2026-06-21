@@ -406,7 +406,7 @@ describe("cacheStorageSchema", () => {
 	});
 
 	it("roundtrips cache data correctly", () => {
-		const messageStrings = ["Error message", "More info", "Test error"];
+		const messageStrings = ["More info", "Test error"];
 		const original: CompactCacheStorage = {
 			configs: {
 				"flint.config.ts": 1_234_567_890,
@@ -422,8 +422,8 @@ describe("cacheStorageSchema", () => {
 						{
 							about: { id: "test-rule" },
 							message: {
-								primary: 2,
-								secondary: [1],
+								primary: 1,
+								secondary: [0],
 								suggestions: [],
 							},
 							range: {
