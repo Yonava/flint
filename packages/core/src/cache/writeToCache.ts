@@ -61,9 +61,9 @@ export async function writeToCache(
 			),
 			...(lintResults.cached &&
 				Object.fromEntries(
-					Array.from(lintResults.cached)
-						.filter(([filePath]) => lintResults.allFilePaths.has(filePath))
-						.map(([filePath, cached]) => [filePath, cached]),
+					Array.from(lintResults.cached).filter(([filePath]) =>
+						lintResults.allFilePaths.has(filePath),
+					),
 				)),
 		},
 		globalInvalidations,
