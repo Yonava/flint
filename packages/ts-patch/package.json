@@ -1,6 +1,6 @@
 {
 	"name": "@flint.fyi/ts-patch",
-	"version": "0.14.0",
+	"version": "0.16.0",
 	"description": "[Experimental] Utilities for patching TypeScript used by @flint/core.",
 	"homepage": "https://flint.fyi",
 	"repository": {
@@ -34,10 +34,10 @@
 		"typescript": "catalog:dev"
 	},
 	"peerDependencies": {
-		"typescript": "^6.0.0"
+		"typescript": "catalog:peer"
 	},
 	"engines": {
-		"node": ">=24.0.0"
+		"node": ">=26.1.0"
 	},
 	"publishConfig": {
 		"access": "public",

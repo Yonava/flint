@@ -2,40 +2,31 @@ import path from "node:path";
 
 import { createProjectService } from "@typescript-eslint/project-service";
 import { debugForFile } from "debug-for-file";
-import ts, { SyntaxKind } from "typescript";
+import { getPreEmitDiagnostics, type Program } from "typescript";
 
 import {
 	createLanguage,
-	type AnyOptionalSchema,
 	type FileAboutData,
-	type InferredOutputObject,
-	type LanguageFile,
+	type FileVisitors,
+	type Language,
 	type LanguageFileDefinition,
 	type LanguageReports,
-	type RuleRuntime,
 } from "@flint.fyi/core";
 import { assert, nullThrows } from "@flint.fyi/utils";
 
 import packageJson from "../package.json" with { type: "json" };
 import { convertTypeScriptDiagnosticToLanguageReport } from "./convertTypeScriptDiagnosticToLanguageReport.ts";
+import { createNodeVisitorsForFile } from "./createNodeVisitorsForFile.ts";
 import { createTypeScriptServerHost } from "./createTypeScriptServerHost.ts";
 import { parseDirectivesFromTypeScriptFile } from "./directives/parseDirectivesFromTypeScriptFile.ts";
-import { getFirstEnumValues } from "./getFirstEnumValues.ts";
 import { getTypeScriptFileCacheImpacts } from "./getTypeScriptFileCacheImpacts.ts";
-import type { TypeScriptNodesByName, TypeScriptNodeVisitors } from "./nodes.ts";
+import type { TypeScriptNodeVisitors } from "./nodes.ts";
 import { orderTypeScriptFilePaths } from "./orderTypeScriptFilePaths.ts";
 import type * as AST from "./types/ast.ts";
 import type { Checker } from "./types/checker.ts";
-
-export interface TypeScriptFileServices {
-	program: ts.Program;
-	sourceFile: AST.SourceFile;
-	typeChecker: Checker;
-}
+import type { TypeScriptFileServices } from "./types/services.ts";
 
 const log = debugForFile(import.meta.filename);
-
-export const NodeSyntaxKinds = getFirstEnumValues(SyntaxKind);
 
 interface GlobalLanguageState {
 	packageVersion: string;
@@ -43,20 +34,22 @@ interface GlobalLanguageState {
 }
 type VolarCreateFile = (
 	data: FileAboutData,
-	program: ts.Program,
+	program: Program,
 	sourceFile: AST.SourceFile,
 ) => VolarLanguageFileDefinition;
 
-type VolarLanguageFileDefinition = LanguageFileDefinition<object> & {
-	__volarServices: {
-		getLanguageReports(): LanguageReports;
-		runVisitors(
-			file: LanguageFile<TypeScriptFileServices>,
-			options: InferredOutputObject<AnyOptionalSchema | undefined>,
-			runtime: RuleRuntime<TypeScriptNodeVisitors, TypeScriptFileServices>,
-		): void;
+type VolarLanguageFileDefinition =
+	LanguageFileDefinition<TypeScriptFileServices> & {
+		__volarServices: {
+			getLanguageReports(): LanguageReports;
+			runVisitors(
+				fileVisitors: readonly FileVisitors<
+					TypeScriptNodeVisitors,
+					TypeScriptFileServices
+				>[],
+			): void;
+		};
 	};
-};
 
 const stateSymbol = Symbol.for("@flint.fyi/typescript-language/state");
 
@@ -74,7 +67,7 @@ const languageState: GlobalLanguageState = (globalTyped[stateSymbol] = {
 	volarCreateFile: null,
 });
 
-export function setVolarCreateFile(create: VolarCreateFile) {
+export function setVolarCreateFile(create: VolarCreateFile): void {
 	assert(
 		languageState.volarCreateFile == null,
 		"setVolarCreateFile is expected to be called only once",
@@ -82,10 +75,10 @@ export function setVolarCreateFile(create: VolarCreateFile) {
 	languageState.volarCreateFile = create;
 }
 
-export const typescriptLanguage = createLanguage<
+export const typescriptLanguage: Language<
 	TypeScriptNodeVisitors,
 	TypeScriptFileServices
->({
+> = createLanguage({
 	about: {
 		name: "TypeScript",
 	},
@@ -127,8 +120,9 @@ export const typescriptLanguage = createLanguage<
 					language: typescriptLanguage,
 					services: {
 						program,
-						sourceFile,
-						typeChecker: program.getTypeChecker(),
+						sourceFile: sourceFile as AST.SourceFile,
+						// ew, I don't like this. the ts -> AST type story is not great
+						typeChecker: program.getTypeChecker() as unknown as Checker,
 					},
 					[Symbol.dispose]() {
 						service.closeClientFile(data.filePathAbsolute);
@@ -162,41 +156,21 @@ export const typescriptLanguage = createLanguage<
 				file as VolarLanguageFileDefinition
 			).__volarServices.getLanguageReports();
 		}
-		return ts
-			.getPreEmitDiagnostics(file.services.program, file.services.sourceFile)
-			.map(convertTypeScriptDiagnosticToLanguageReport);
+		return getPreEmitDiagnostics(
+			file.services.program,
+			file.services.sourceFile,
+		).map(convertTypeScriptDiagnosticToLanguageReport);
 	},
 	orderFilePaths: orderTypeScriptFilePaths,
-	runFileVisitors(file, options, runtime) {
-		if (!runtime.visitors) {
-			return;
-		}
-
+	runFileVisitors(file, fileVisitors) {
 		if ("__volarServices" in file) {
 			(file as VolarLanguageFileDefinition).__volarServices.runVisitors(
-				file,
-				options,
-				runtime,
+				fileVisitors,
 			);
 			return;
 		}
 
-		const { visitors } = runtime;
-		const visitorServices = { options, ...file.services };
-
-		const visit = (node: ts.Node) => {
-			const key = NodeSyntaxKinds[node.kind] as keyof TypeScriptNodesByName;
-
-			// @ts-expect-error -- The node parameter type shouldn't be `never`...?
-			visitors[key]?.(node, visitorServices);
-
-			node.forEachChild(visit);
-
-			// @ts-expect-error -- The node parameter type shouldn't be `never`...?
-			visitors[`${key}:exit`]?.(node, visitorServices);
-		};
-
-		visit(file.services.sourceFile);
+		createNodeVisitorsForFile(fileVisitors)?.visit(file.services.sourceFile);
 	},
 });
 

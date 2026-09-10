@@ -1,34 +1,36 @@
-import { createLanguage } from "@flint.fyi/core";
+import { createLanguage, type Language } from "@flint.fyi/core";
 
 import type { TextFileServices, TextNodes } from "./types.ts";
 
-export const textLanguage = createLanguage<TextNodes, TextFileServices>({
-	about: {
-		name: "Text",
-	},
-	createFileFactory: () => {
-		return {
-			createFile: (data) => {
-				return {
-					about: data,
-					services: data,
-				};
-			},
-		};
-	},
-	runFileVisitors: (file, options, runtime) => {
-		if (!runtime.visitors) {
-			return;
-		}
+export const textLanguage: Language<TextNodes, TextFileServices> =
+	createLanguage({
+		about: {
+			name: "Text",
+		},
+		createFileFactory: () => {
+			return {
+				createFile: (data) => {
+					return {
+						about: data,
+						services: data,
+					};
+				},
+			};
+		},
+		runFileVisitors: (file, fileVisitors) => {
+			const { sourceText } = file.services;
+			let lines: string[] | undefined;
 
-		const visitorServices = { options, ...file.services };
+			for (const { services, visitors } of fileVisitors) {
+				visitors.file?.(sourceText, services);
 
-		runtime.visitors.file?.(file.services.sourceText, visitorServices);
+				if (visitors.line) {
+					lines ??= sourceText.split(/\r\n|\n|\r/);
 
-		if (runtime.visitors.line) {
-			for (const line of file.services.sourceText.split(/\r\n|\n|\r/)) {
-				runtime.visitors.line(line, visitorServices);
+					for (const line of lines) {
+						visitors.line(line, services);
+					}
+				}
 			}
-		}
-	},
-});
+		},
+	});

@@ -1,5 +1,40 @@
 # @flint/cli
 
+## 0.23.1
+
+### Patch Changes
+
+- Updated dependencies [[`7d6522c`](https://github.com/flint-fyi/flint/commit/7d6522cf53a5c7f9cf7823cf255e1cbdfef511a3), [`5b63f69`](https://github.com/flint-fyi/flint/commit/5b63f6901ff0d6cfabe4dbf61cb3f0333dc94602)]:
+  - @flint.fyi/core@0.26.0
+
+## 0.23.0
+
+### Minor Changes
+
+- [#3168](https://github.com/flint-fyi/flint/pull/3168) [`5d98e15`](https://github.com/flint-fyi/flint/commit/5d98e15aa3aefbd3eaf6df6b4b9ead019a7d1c34) - Drop support for node versions <26.1.0.
+
+### Patch Changes
+
+- Updated dependencies [[`5d98e15`](https://github.com/flint-fyi/flint/commit/5d98e15aa3aefbd3eaf6df6b4b9ead019a7d1c34)]:
+  - @flint.fyi/utils@0.16.0
+  - @flint.fyi/core@0.25.0
+
+## 0.22.0
+
+### Minor Changes
+
+- [#3118](https://github.com/flint-fyi/flint/pull/3118) [`c737600`](https://github.com/flint-fyi/flint/commit/c7376006022dc527a18e5ab433b81fb9687bdf20) - Begin bundling all package entry points.
+
+### Patch Changes
+
+- [#3136](https://github.com/flint-fyi/flint/pull/3136) [`db27b14`](https://github.com/flint-fyi/flint/commit/db27b14f41e4f3022d019f43038665729302b5e4) - Fixed issue where flint executions in GitHub were not logging a summary (including formatting issues).
+
+- [#3137](https://github.com/flint-fyi/flint/pull/3137) [`894e5f6`](https://github.com/flint-fyi/flint/commit/894e5f6a556662f3761a3c4054cd89f29e627e16) - Lazy load all presenter factories.
+
+- Updated dependencies [[`c737600`](https://github.com/flint-fyi/flint/commit/c7376006022dc527a18e5ab433b81fb9687bdf20)]:
+  - @flint.fyi/utils@0.15.0
+  - @flint.fyi/core@0.24.0
+
 ## 0.21.0
 
 ### Minor Changes
@@ -50,7 +85,7 @@
 ### Minor Changes
 
 - cb7e8a8: Change "diagnostics" nomenclature to "language reports".
-All external references to the term diagnostic or diagnostics are now using the term language report instead.
+  All external references to the term diagnostic or diagnostics are now using the term language report instead.
 
 ### Patch Changes
 

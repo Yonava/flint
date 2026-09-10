@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
@@ -59,6 +60,63 @@ describe("createDiskBackedLinterHost", () => {
 		expect(host.fileTypeSync(filePath)).toEqual("file");
 		expect(host.fileTypeSync(dirPath)).toEqual("directory");
 		expect(host.fileTypeSync(missingPath)).toEqual(undefined);
+	});
+
+	it("returns file touch times", async () => {
+		const host = createDiskBackedLinterHost(integrationRoot);
+		const filePath = path.join(integrationRoot, "file.txt");
+		const touchTime = new Date("2025-01-02T03:04:05.000Z");
+
+		fs.writeFileSync(filePath, "hello");
+		fs.utimesSync(filePath, touchTime, touchTime);
+
+		expect(await host.getFileTouchTime(filePath)).toEqual(touchTime.getTime());
+		expect(host.getFileTouchTimeSync(filePath)).toEqual(touchTime.getTime());
+	});
+
+	it("returns undefined for a missing file touch time asynchronously", async () => {
+		const host = createDiskBackedLinterHost(integrationRoot);
+		const missingPath = path.join(integrationRoot, "missing.txt");
+
+		expect(await host.getFileTouchTime(missingPath)).toBeUndefined();
+	});
+
+	it("returns undefined for a missing file touch time synchronously", () => {
+		const host = createDiskBackedLinterHost(integrationRoot);
+		const missingPath = path.join(integrationRoot, "missing.txt");
+
+		expect(host.getFileTouchTimeSync(missingPath)).toBeUndefined();
+	});
+
+	it("finds the repository root from a nested file", () => {
+		const repositoryRoot = path.join(integrationRoot, "repo");
+		const packageDirectory = path.join(repositoryRoot, "packages/core");
+		fs.mkdirSync(packageDirectory, { recursive: true });
+		fs.writeFileSync(path.join(packageDirectory, "package.json"), "{}");
+		execFileSync("git", ["init", "--quiet"], { cwd: repositoryRoot });
+
+		const host = createDiskBackedLinterHost(repositoryRoot);
+
+		expect(host.getRepositoryRoot()).toEqual(normalizePath(repositoryRoot));
+	});
+
+	it("memoizes the repository root", () => {
+		const repositoryRoot = path.join(integrationRoot, "repo");
+		const packageDirectory = path.join(repositoryRoot, "packages/core");
+		fs.mkdirSync(packageDirectory, { recursive: true });
+		fs.writeFileSync(path.join(packageDirectory, "package.json"), "{}");
+		execFileSync("git", ["init", "--quiet"], { cwd: repositoryRoot });
+
+		const host = createDiskBackedLinterHost(packageDirectory);
+
+		expect(host.getRepositoryRoot()).toEqual(normalizePath(repositoryRoot));
+
+		fs.rmSync(path.join(repositoryRoot, ".git"), {
+			force: true,
+			recursive: true,
+		});
+
+		expect(host.getRepositoryRoot()).toEqual(normalizePath(repositoryRoot));
 	});
 
 	it("reads file contents", () => {

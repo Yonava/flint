@@ -4,7 +4,7 @@ import {
 } from "@flint.fyi/typescript-language";
 
 import { ruleCreator } from "../ruleCreator.ts";
-import { parseVitestTestFunctionCall } from "../utils/parseVitestTestFunctionCall.ts";
+import { parseVitestFunctionCall } from "../utils/parseVitestFunctionCall.ts";
 
 export default ruleCreator.createRule(typescriptLanguage, {
 	about: {
@@ -29,7 +29,7 @@ export default ruleCreator.createRule(typescriptLanguage, {
 		return {
 			visitors: {
 				CallExpression: (node, { sourceFile }) => {
-					const functionCall = parseVitestTestFunctionCall(node);
+					const functionCall = parseVitestFunctionCall(node);
 
 					switch (functionCall?.name) {
 						case "afterAll":
@@ -46,16 +46,11 @@ export default ruleCreator.createRule(typescriptLanguage, {
 							break;
 
 						case "describe":
-						case "fdescribe":
-						case "xdescribe":
 							insideDescribeStack += 1;
 							break;
 
-						case "fit":
 						case "it":
 						case "test":
-						case "xit":
-						case "xtest":
 							if (!insideDescribeStack) {
 								context.report({
 									data: { name: functionCall.name, type: "test" },
@@ -66,10 +61,8 @@ export default ruleCreator.createRule(typescriptLanguage, {
 					}
 				},
 				"CallExpression:exit": (node) => {
-					switch (parseVitestTestFunctionCall(node)?.name) {
+					switch (parseVitestFunctionCall(node)?.name) {
 						case "describe":
-						case "fdescribe":
-						case "xdescribe":
 							insideDescribeStack -= 1;
 							break;
 					}

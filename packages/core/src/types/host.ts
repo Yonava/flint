@@ -1,10 +1,24 @@
 import type { commonlyIgnoredGlobs } from "../host/watcher.ts";
 
-export interface LinterHost {
+export interface FileSystemWatcher {
+	watchDirectorySync: (
+		directoryPathAbsolute: string,
+		callback: LinterHostDirectoryWatcher,
+		options: WatchDirectoryOptions,
+	) => Disposable;
+	watchFileSync: (
+		filePathAbsolute: string,
+		callback: LinterHostFileWatcher,
+		options: WatchOptions,
+	) => Disposable;
+}
+
+export interface LinterHost extends FileSystemWatcher {
 	fileTypeSync(pathAbsolute: string): "directory" | "file" | undefined;
 	getCurrentDirectory(): string;
 	getFileTouchTime(filePath: string): Promise<number | undefined>;
 	getFileTouchTimeSync(filePath: string): number | undefined;
+	getRepositoryRoot(): string | undefined;
 
 	/**
 	 * Find a set of files relative to the cwd given a set of glob patterns.
@@ -19,16 +33,6 @@ export interface LinterHost {
 	readDirectorySync(directoryPathAbsolute: string): LinterHostDirectoryEntry[];
 	readFile(filePathAbsolute: string): Promise<string | undefined>;
 	readFileSync(filePathAbsolute: string): string | undefined;
-	watchDirectorySync(
-		directoryPathAbsolute: string,
-		callback: LinterHostDirectoryWatcher,
-		options: WatchDirectoryOptions,
-	): Disposable;
-	watchFileSync(
-		filePathAbsolute: string,
-		callback: LinterHostFileWatcher,
-		options: WatchOptions,
-	): Disposable;
 	writeFile(filePathAbsolute: string, content: string): Promise<void>;
 	writeFileSync(filePathAbsolute: string, content: string): void;
 }
@@ -39,6 +43,7 @@ export interface LinterHostDirectoryEntry {
 }
 
 export type LinterHostDirectoryWatcher = (filePathAbsolute: string) => void;
+
 export type LinterHostFileWatcher = (event: LinterHostFileWatcherEvent) => void;
 
 export type LinterHostFileWatcherEvent = "changed" | "created" | "deleted";

@@ -1,6 +1,6 @@
 {
 	"name": "@flint.fyi/browser",
-	"version": "0.3.0",
+	"version": "0.5.1",
 	"description": "[Experimental] A Flint plugin for browser code.",
 	"homepage": "https://flint.fyi/rules/browser",
 	"repository": {
@@ -28,7 +28,7 @@
 		"@flint.fyi/core": "workspace:^",
 		"@flint.fyi/typescript-language": "workspace:^",
 		"@flint.fyi/utils": "workspace:^",
-		"typescript": "^6.0.0"
+		"typescript": "catalog:prod"
 	},
 	"devDependencies": {
 		"@flint.fyi/build": "workspace:^",
@@ -37,7 +37,7 @@
 		"vitest": "catalog:dev"
 	},
 	"engines": {
-		"node": ">=24.0.0"
+		"node": ">=26.1.0"
 	},
 	"publishConfig": {
 		"access": "public",
