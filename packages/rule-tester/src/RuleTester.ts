@@ -200,6 +200,7 @@ export class RuleTester {
 			const actualSuggestions = resolveReportedSuggestions(
 				reports,
 				testCaseNormalized,
+				this.#linterHost.getCurrentDirectory(),
 			);
 			assert.deepStrictEqual(actualSuggestions, testCase.suggestions);
 		});
