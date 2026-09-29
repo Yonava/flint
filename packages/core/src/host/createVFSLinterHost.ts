@@ -238,7 +238,10 @@ export function createVFSLinterHost(
 				return;
 			}
 			fileMap.delete(key);
-			watchEvent(file.path, "deleted");
+			watchEvent(
+				file.path,
+				baseHost?.fileTypeSync(file.path) === "file" ? "changed" : "deleted",
+			);
 		},
 		vfsListFiles() {
 			return new Map(Array.from(fileMap.values(), (f) => [f.path, f.content]));
@@ -247,7 +250,10 @@ export function createVFSLinterHost(
 			const key = pathKey(filePathAbsolute, caseSensitiveFS);
 			const existing = fileMap.get(key);
 			const storedPath = existing?.path ?? normalizePath(filePathAbsolute);
-			const fileEvent = existing == null ? "created" : "changed";
+			const fileEvent =
+				existing != null || baseHost?.fileTypeSync(storedPath) === "file"
+					? "changed"
+					: "created";
 			fileMap.set(key, { content, path: storedPath, touchTime: Date.now() });
 			watchEvent(storedPath, fileEvent);
 		},
