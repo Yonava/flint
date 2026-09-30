@@ -62,16 +62,22 @@ const flintRulePluginSchema: z.ZodType<FlintPlugin> = z.union([
 type FlintPreset =
 	| "javascript"
 	| "logical"
+	| "logicalStrict"
 	| "security"
+	| "securityStrict"
 	| "sorting"
-	| "stylistic";
+	| "stylistic"
+	| "stylisticStrict";
 
 const flintRulePresetSchema: z.ZodType<FlintPreset> = z.union([
 	z.literal("javascript"),
 	z.literal("logical"),
+	z.literal("logicalStrict"),
 	z.literal("security"),
+	z.literal("securityStrict"),
 	z.literal("sorting"),
 	z.literal("stylistic"),
+	z.literal("stylisticStrict"),
 ]);
 
 const flintRuleReferenceSchema: z.ZodType<FlintRuleReference> = z.union([
@@ -88,7 +94,6 @@ const flintRuleReferenceSchema: z.ZodType<FlintRuleReference> = z.union([
 			plugin: flintRulePluginSchema,
 			preset: flintRulePresetSchema.exactOptional(),
 			status: z.literal(["implemented"]).exactOptional(),
-			strictness: z.literal("strict").exactOptional(),
 		})
 		.strict(),
 ]);
@@ -99,7 +104,6 @@ export type FlintRuleReference =
 			plugin: FlintPlugin;
 			preset?: FlintPreset;
 			status?: "implemented";
-			strictness?: "strict";
 	  }
 	| {
 			name: string;
