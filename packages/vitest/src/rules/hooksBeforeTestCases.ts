@@ -5,19 +5,13 @@ import {
 
 import { ruleCreator } from "../ruleCreator.ts";
 import { parseVitestFunctionCall } from "../utils/parseVitestFunctionCall.ts";
-
-const testCaseFunctionNamesSet = new Set([
-	"bench",
-	"fit",
-	"it",
-	"test",
-	"xit",
-	"xtest",
-]);
+import { testCaseFunctionNamesSet } from "../utils/testCaseFunctions.ts";
 
 const hookFunctionNamesSet = new Set([
 	"afterAll",
 	"afterEach",
+	"aroundAll",
+	"aroundEach",
 	"beforeAll",
 	"beforeEach",
 ]);
