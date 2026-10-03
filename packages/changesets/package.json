@@ -1,12 +1,12 @@
 {
-	"name": "@flint.fyi/markdown-language",
-	"version": "0.17.3",
-	"description": "[Experimental] Markdown language for Flint.",
-	"homepage": "https://flint.fyi",
+	"name": "@flint.fyi/changesets",
+	"version": "0.0.0",
+	"description": "[Experimental] A Flint plugin for Changesets.",
+	"homepage": "https://flint.fyi/rules/changesets",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/flint-fyi/flint.git",
-		"directory": "packages/markdown-language"
+		"directory": "packages/changesets"
 	},
 	"license": "MIT",
 	"author": {
@@ -23,22 +23,17 @@
 		"dist/"
 	],
 	"scripts": {
-		"test": "vitest --project markdown-language"
+		"test": "vitest --project changesets"
 	},
 	"dependencies": {
 		"@flint.fyi/core": "workspace:^",
-		"@flint.fyi/utils": "workspace:^",
-		"@types/mdast": "catalog:prod",
-		"@types/unist": "catalog:prod",
-		"mdast-util-from-markdown": "catalog:prod",
-		"mdast-util-frontmatter": "catalog:prod",
-		"mdast-util-gfm": "catalog:prod",
-		"micromark-extension-frontmatter": "catalog:prod",
-		"micromark-extension-gfm": "catalog:prod",
-		"unist-util-visit": "catalog:prod"
+		"@flint.fyi/markdown-language": "workspace:^",
+		"zod": "catalog:prod"
 	},
 	"devDependencies": {
 		"@flint.fyi/build": "workspace:^",
+		"@flint.fyi/rule-tester": "workspace:^",
+		"@types/mdast": "catalog:dev",
 		"tsdown": "catalog:dev",
 		"vitest": "catalog:dev"
 	},

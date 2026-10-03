@@ -34,6 +34,17 @@ const pluginDataById = {
 		id: "browser",
 		name: "Browser",
 	},
+	changesets: {
+		colors: {
+			flame: "#0088CC",
+			heart: "#66CCFF",
+			squiggly: "#001B33",
+		},
+		description:
+			"Rules for Changesets, a tool for managing versioning and changelogs with a focus on multi-package repositories.",
+		id: "changesets",
+		name: "Changesets",
+	},
 	css: {
 		colors: {
 			flame: "#66309A",
@@ -255,6 +266,7 @@ export const pluginDataByGroup: Record<
 	},
 	incubator: {
 		astro: pluginDataById.astro,
+		changesets: pluginDataById.changesets,
 		css: pluginDataById.css,
 		next: pluginDataById.next,
 		nuxt: pluginDataById.nuxt,
