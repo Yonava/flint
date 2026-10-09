@@ -72,7 +72,7 @@ export interface VitestFunctionCall {
 }
 
 interface CalleeChain {
-	head: AST.Identifier;
+	head: string;
 	links: CalleeChainLink[];
 }
 
@@ -89,7 +89,7 @@ export function parseVitestFunctionCall(
 		return;
 	}
 
-	const name = chain.head.text;
+	const name = chain.head;
 	if (!isVitestFunctionName(name)) {
 		return;
 	}
@@ -97,16 +97,17 @@ export function parseVitestFunctionCall(
 	const kind = vitestFunctionKinds[name];
 	const { factories, modifiers } = vitestKindMembers[kind];
 
-	const validChain = chain.links.every(({ invoked, member }) => {
-		return invoked ? factories.has(member) : modifiers.has(member);
-	});
-
-	if (!validChain) {
+	if (
+		chain.links.every(
+			({ invoked, member }) =>
+				!(invoked ? factories.has(member) : modifiers.has(member)),
+		)
+	) {
 		return;
 	}
 
 	return {
-		kind: vitestFunctionKinds[name],
+		kind,
 		members: chain.links.map(({ member }) => member),
 		name,
 		targetNode: getTargetNode(node.expression),
@@ -161,7 +162,7 @@ function parseCalleeChain(
 			return invoked
 				? undefined
 				: {
-						head: node,
+						head: node.text,
 						links: [],
 					};
 
