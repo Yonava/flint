@@ -37,10 +37,10 @@ export default ruleCreator.createRule(typescriptLanguage, {
 						return;
 					}
 
-					const { kind, segments, targetNode } = vitestFunction;
+					const { kind, members, targetNode } = vitestFunction;
 
-					const hasExemptModifier = segments.some((segment) =>
-						exemptModifiers.has(segment),
+					const hasExemptModifier = members.some((member) =>
+						exemptModifiers.has(member),
 					);
 
 					if (kind === "test" && !hasExemptModifier) {
