@@ -35,12 +35,12 @@ const knownVitestFunctionModifiersSet = new Set([
 export interface VitestFunctionCall extends CalleeChain {
 	kind: VitestFunctionKind;
 	name: VitestFunctionName;
+	targetNode: AST.Expression;
 }
 
 interface CalleeChain {
 	name: string;
 	segments: string[];
-	targetNode: AST.AnyNode;
 }
 
 export function parseVitestFunctionCall(
@@ -60,9 +60,10 @@ export function parseVitestFunctionCall(
 		...parsedCallee,
 		kind: vitestFunctionKinds[name],
 		name,
+		targetNode: getTargetNode(node.expression),
 	};
 
-	switch (node.expression.kind) {
+	switch (skipNonNullExpressions(node.expression).kind) {
 		case SyntaxKind.CallExpression:
 		case SyntaxKind.TaggedTemplateExpression:
 			return parsedCallee.segments
@@ -81,6 +82,20 @@ export function parseVitestFunctionCall(
 
 		case SyntaxKind.Identifier:
 			return functionCall;
+	}
+}
+
+function getTargetNode(node: AST.Expression): AST.Expression {
+	switch (node.kind) {
+		case SyntaxKind.CallExpression:
+		case SyntaxKind.NonNullExpression:
+			return getTargetNode(node.expression);
+
+		case SyntaxKind.TaggedTemplateExpression:
+			return getTargetNode(node.tag);
+
+		default:
+			return node;
 	}
 }
 
@@ -107,7 +122,6 @@ function parseCalleeChain(node: AST.AnyNode): CalleeChain | undefined {
 						...parsedExpression.segments,
 						node.argumentExpression.text,
 					],
-					targetNode: node,
 				}
 			);
 		}
@@ -116,8 +130,10 @@ function parseCalleeChain(node: AST.AnyNode): CalleeChain | undefined {
 			return {
 				name: node.text,
 				segments: [],
-				targetNode: node,
 			};
+
+		case SyntaxKind.NonNullExpression:
+			return parseCalleeChain(node.expression);
 
 		case SyntaxKind.PropertyAccessExpression: {
 			const parsedExpression = parseCalleeChain(node.expression);
@@ -126,7 +142,6 @@ function parseCalleeChain(node: AST.AnyNode): CalleeChain | undefined {
 				parsedExpression && {
 					...parsedExpression,
 					segments: [...parsedExpression.segments, node.name.text],
-					targetNode: node,
 				}
 			);
 		}
@@ -134,4 +149,10 @@ function parseCalleeChain(node: AST.AnyNode): CalleeChain | undefined {
 		case SyntaxKind.TaggedTemplateExpression:
 			return parseCalleeChain(node.tag);
 	}
+}
+
+function skipNonNullExpressions(node: AST.Expression): AST.Expression {
+	return node.kind === SyntaxKind.NonNullExpression
+		? skipNonNullExpressions(node.expression)
+		: node;
 }

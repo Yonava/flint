@@ -149,9 +149,41 @@ describe(parseVitestFunctionCall, () => {
 	});
 
 	it.each([
+		{ name: "test", segments: [], source: "test!()" },
+		{ name: "test", segments: ["only"], source: "test.only!()" },
+		{ name: "test", segments: ["only"], source: "test!.only()" },
+		{
+			name: "test",
+			segments: ["each"],
+			source: "test.each([1])!('%i', () => {})",
+		},
+		{
+			name: "test",
+			segments: ["each"],
+			source: "test.each`\na\n${1}\n`!('%i', () => {})",
+		},
+		{
+			name: "test",
+			segments: ["extend"],
+			source: "test.extend({})!('my test', () => {})",
+		},
+	])(
+		"parses non-null asserted callee $source",
+		({ name, segments, source }) => {
+			expect(
+				parseVitestFunctionCall(parseCallExpression(source)),
+			).toMatchObject({
+				name,
+				segments,
+			});
+		},
+	);
+
+	it.each([
 		"nonsense.each([1])('%i', () => {})",
 		"nonsense.each`\na\n${1}\n`('%i', () => {})",
 		"test.nonsense.each([1])('%i', () => {})",
+		"test.nonsense.each([1])!('%i', () => {})",
 	])("returns undefined for call-returning callee %s", (source) => {
 		expect(
 			parseVitestFunctionCall(parseCallExpression(source)),
@@ -193,6 +225,9 @@ describe(parseVitestFunctionCall, () => {
 		{ source: "test.skip.only(() => {})", targetNode: "test.skip.only" },
 		{ source: 'test["skip"](() => {})', targetNode: 'test["skip"]' },
 		{ source: "test.each([1])('%i', () => {})", targetNode: "test.each" },
+		{ source: "test!(() => {})", targetNode: "test" },
+		{ source: "test.skip!(() => {})", targetNode: "test.skip" },
+		{ source: "test.each([1])!('%i', () => {})", targetNode: "test.each" },
 	])(
 		"reports $targetNode as the target node of $source",
 		({ source, targetNode }) => {
