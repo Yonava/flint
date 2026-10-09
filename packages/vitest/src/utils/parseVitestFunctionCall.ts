@@ -98,7 +98,7 @@ export function parseVitestFunctionCall(
 	const { factories, modifiers } = vitestKindMembers[kind];
 
 	if (
-		chain.links.every(
+		chain.links.some(
 			({ invoked, member }) =>
 				!(invoked ? factories.has(member) : modifiers.has(member)),
 		)
@@ -146,16 +146,8 @@ function parseCalleeChain(
 			}
 
 			const chain = parseCalleeChain(node.expression, false);
-
-			return (
-				chain && {
-					...chain,
-					links: [
-						...chain.links,
-						{ invoked, member: node.argumentExpression.text },
-					],
-				}
-			);
+			chain?.links.push({ invoked, member: node.argumentExpression.text });
+			return chain;
 		}
 
 		case SyntaxKind.Identifier:
@@ -171,13 +163,8 @@ function parseCalleeChain(
 
 		case SyntaxKind.PropertyAccessExpression: {
 			const chain = parseCalleeChain(node.expression, false);
-
-			return (
-				chain && {
-					...chain,
-					links: [...chain.links, { invoked, member: node.name.text }],
-				}
-			);
+			chain?.links.push({ invoked, member: node.name.text });
+			return chain;
 		}
 
 		case SyntaxKind.TaggedTemplateExpression:
