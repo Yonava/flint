@@ -112,6 +112,29 @@ export function parseVitestFunctionCall(
 		name,
 		targetNode: getTargetNode(node.expression),
 	};
+
+	switch (skipNonNullExpressions(node.expression).kind) {
+		case SyntaxKind.CallExpression:
+		case SyntaxKind.TaggedTemplateExpression:
+			return parsedCallee.segments
+				.slice(0, -1)
+				.every((segment) => knownVitestFunctionModifiersSet.has(segment))
+				? functionCall
+				: undefined;
+
+		case SyntaxKind.ElementAccessExpression:
+		case SyntaxKind.PropertyAccessExpression:
+			return parsedCallee.segments.every((segment) =>
+				knownVitestFunctionModifiersSet.has(segment),
+			)
+				? functionCall
+				: undefined;
+
+		case SyntaxKind.Identifier:
+			return functionCall;
+	}
+
+	return undefined;
 }
 
 function getTargetNode(node: AST.Expression): AST.Expression {
@@ -170,4 +193,6 @@ function parseCalleeChain(
 		case SyntaxKind.TaggedTemplateExpression:
 			return invoked ? undefined : parseCalleeChain(node.tag, true);
 	}
+
+	return undefined;
 }
