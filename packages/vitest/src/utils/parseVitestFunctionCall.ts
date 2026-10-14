@@ -10,6 +10,8 @@ const vitestFunctionKinds = {
 	beforeAll: "hook",
 	beforeEach: "hook",
 	describe: "describe",
+	expect: "expect",
+	expectTypeOf: "expect",
 	it: "test",
 	suite: "describe",
 	test: "test",
@@ -27,7 +29,10 @@ interface VitestKindMembers {
 	modifiers: ReadonlySet<string>;
 }
 
-const vitestKindMembers: Record<VitestFunctionKind, VitestKindMembers> = {
+const vitestKindMembers: Record<
+	Exclude<VitestFunctionKind, "expect">,
+	VitestKindMembers
+> = {
 	describe: {
 		factories: new Set(["each", "for", "runIf", "skipIf"]),
 		modifiers: new Set([
@@ -64,6 +69,19 @@ const vitestKindMembers: Record<VitestFunctionKind, VitestKindMembers> = {
 	},
 };
 
+/** Members of `expect` that are invoked to produce an assertion, such as `soft`. */
+const expectFactories = new Set(["element", "poll", "soft"]);
+
+/** Members of `expect` that are called directly without a matcher, such as `assertions`. */
+const expectUtilities = new Set([
+	"addEqualityTesters",
+	"addSnapshotSerializer",
+	"assertions",
+	"extend",
+	"hasAssertions",
+	"unreachable",
+]);
+
 export interface VitestFunctionCall {
 	kind: VitestFunctionKind;
 	members: string[];
@@ -73,6 +91,7 @@ export interface VitestFunctionCall {
 
 interface CalleeChain {
 	head: string;
+	headInvoked: boolean;
 	links: CalleeChainLink[];
 }
 
@@ -95,13 +114,10 @@ export function parseVitestFunctionCall(
 	}
 
 	const kind = vitestFunctionKinds[name];
-	const { factories, modifiers } = vitestKindMembers[kind];
-
 	if (
-		chain.links.some(
-			({ invoked, member }) =>
-				!(invoked ? factories.has(member) : modifiers.has(member)),
-		)
+		kind === "expect"
+			? !isValidExpectChain(chain)
+			: !isValidChain(chain, vitestKindMembers[kind])
 	) {
 		return;
 	}
@@ -128,6 +144,33 @@ function getTargetNode(node: AST.Expression): AST.Expression {
 	}
 }
 
+function isValidChain(
+	{ headInvoked, links }: CalleeChain,
+	{ factories, modifiers }: VitestKindMembers,
+): boolean {
+	return (
+		!headInvoked &&
+		links.every(({ invoked, member }) =>
+			invoked ? factories.has(member) : modifiers.has(member),
+		)
+	);
+}
+
+function isValidExpectChain({ headInvoked, links }: CalleeChain): boolean {
+	if (headInvoked) {
+		return !!links.length;
+	}
+
+	const [first, ...rest] = links;
+	if (!first) {
+		return false;
+	}
+
+	return first.invoked
+		? expectFactories.has(first.member) && !!rest.length
+		: expectUtilities.has(first.member) && !rest.length;
+}
+
 function isVitestFunctionName(name: string): name is VitestFunctionName {
 	return Object.hasOwn(vitestFunctionKinds, name);
 }
@@ -151,12 +194,11 @@ function parseCalleeChain(
 		}
 
 		case SyntaxKind.Identifier:
-			return invoked
-				? undefined
-				: {
-						head: node.text,
-						links: [],
-					};
+			return {
+				head: node.text,
+				headInvoked: invoked,
+				links: [],
+			};
 
 		case SyntaxKind.NonNullExpression:
 			return parseCalleeChain(node.expression, invoked);

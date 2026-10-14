@@ -18,7 +18,7 @@ const knownVitestFunctions = [
 	{ kind: "test", name: "test" },
 ];
 
-const unknownVitestFunctionNames = ["foo", "expect", "vi", "tests"];
+const unknownVitestFunctionNames = ["foo", "vi", "tests"];
 
 function parseCallExpression(source: string): AST.CallExpression {
 	const sourceFile = ts.createSourceFile(
@@ -212,6 +212,70 @@ describe(parseVitestFunctionCall, () => {
 		"this.test(() => {})",
 		"(0, test)(() => {})",
 	])("returns undefined for unsupported callee syntax %s", (source) => {
+		expect(
+			parseVitestFunctionCall(parseCallExpression(source)),
+		).toBeUndefined();
+	});
+
+	it.each([
+		{ members: ["toBe"], name: "expect", source: "expect(value).toBe(1)" },
+		{
+			members: ["not", "toBe"],
+			name: "expect",
+			source: "expect(value).not.toBe(1)",
+		},
+		{
+			members: ["resolves", "toBe"],
+			name: "expect",
+			source: "expect(promise).resolves.toBe(1)",
+		},
+		{
+			members: ["toBe"],
+			name: "expect",
+			source: 'expect(value)["toBe"](1)',
+		},
+		{
+			members: ["soft", "toBe"],
+			name: "expect",
+			source: "expect.soft(value).toBe(1)",
+		},
+		{
+			members: ["poll", "toBe"],
+			name: "expect",
+			source: "expect.poll(() => value).toBe(1)",
+		},
+		{ members: ["assertions"], name: "expect", source: "expect.assertions(1)" },
+		{
+			members: ["hasAssertions"],
+			name: "expect",
+			source: "expect.hasAssertions()",
+		},
+		{
+			members: ["toEqualTypeOf"],
+			name: "expectTypeOf",
+			source: "expectTypeOf(value).toEqualTypeOf<number>()",
+		},
+		{
+			members: ["parameter", "toBeNumber"],
+			name: "expectTypeOf",
+			source: "expectTypeOf(callback).parameter(0).toBeNumber()",
+		},
+	])("parses expect chain $source", ({ members, name, source }) => {
+		expect(parseVitestFunctionCall(parseCallExpression(source))).toMatchObject({
+			kind: "expect",
+			members,
+			name,
+		});
+	});
+
+	it.each([
+		"expect(value)",
+		"expectTypeOf(value)",
+		"expect.soft(value)",
+		"expect.nonsense(value)",
+		"expect.assertions.nonsense(1)",
+		"expect.nonsense(value).toBe(1)",
+	])("returns undefined for incomplete expect chain %s", (source) => {
 		expect(
 			parseVitestFunctionCall(parseCallExpression(source)),
 		).toBeUndefined();
