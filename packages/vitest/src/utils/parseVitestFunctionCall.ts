@@ -33,7 +33,6 @@ const vitestKindMembers: Record<
 	Exclude<VitestFunctionKind, "expect">,
 	VitestKindMembers
 > = {
-
 	describe: {
 		factories: new Set(["each", "for", "runIf", "skipIf"]),
 		modifiers: new Set([
@@ -92,6 +91,7 @@ export interface VitestFunctionCall {
 
 interface CalleeChain {
 	head: string;
+	headInvoked: boolean;
 	links: CalleeChainLink[];
 }
 
@@ -212,6 +212,6 @@ function parseCalleeChain(
 		case SyntaxKind.TaggedTemplateExpression:
 			return invoked ? undefined : parseCalleeChain(node.tag, true);
 	}
-    
+
 	return undefined;
 }
