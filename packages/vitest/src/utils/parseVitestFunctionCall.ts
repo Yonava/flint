@@ -158,7 +158,7 @@ function isValidChain(
 
 function isValidExpectChain({ headInvoked, links }: CalleeChain): boolean {
 	if (headInvoked) {
-		return links.length > 0;
+		return !!links.length;
 	}
 
 	const [first, ...rest] = links;
@@ -167,7 +167,7 @@ function isValidExpectChain({ headInvoked, links }: CalleeChain): boolean {
 	}
 
 	return first.invoked
-		? expectFactories.has(first.member) && rest.length > 0
+		? expectFactories.has(first.member) && !!rest.length
 		: expectUtilities.has(first.member) && !rest.length;
 }
 
