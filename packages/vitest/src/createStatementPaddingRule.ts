@@ -185,7 +185,7 @@ export function parseStatementVitestFunctionCall(
 		return;
 	}
 
-	const call = unwrapAwaitedExpression(expression);
+	const call = unwrapAwaitAndParentheses(expression);
 	if (call.kind !== SyntaxKind.CallExpression) {
 		return;
 	}
@@ -207,11 +207,11 @@ function getStatementExpression(
 	return undefined;
 }
 
-function unwrapAwaitedExpression(node: AST.Expression): AST.Expression {
+function unwrapAwaitAndParentheses(node: AST.Expression): AST.Expression {
 	switch (node.kind) {
 		case SyntaxKind.AwaitExpression:
 		case SyntaxKind.ParenthesizedExpression:
-			return unwrapAwaitedExpression(node.expression);
+			return unwrapAwaitAndParentheses(node.expression);
 
 		default:
 			return node;
