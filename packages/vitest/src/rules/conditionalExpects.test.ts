@@ -323,6 +323,7 @@ promise["catch"](() => {
 		`test("test", () => { if (something) { doSomething(); } });`,
 		`if (something) { expect(something).toBe(true); }`,
 		`describe("suite", () => { if (something) { expect(something).toBe(true); } });`,
+		`test("test", () => { if (something) { expectTypeOf(something).toEqualTypeOf<true>(); } });`,
 		{
 			code: `
 test("test", () => {
