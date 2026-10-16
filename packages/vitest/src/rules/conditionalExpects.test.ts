@@ -304,6 +304,42 @@ test("test", () => {
 		},
 		{
 			code: `
+test("test", () => {
+    if (something) {
+        expect.soft(something).toBe(true);
+    }
+});
+`,
+			snapshot: `
+test("test", () => {
+    if (something) {
+        expect.soft(something).toBe(true);
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        Avoid calling \`expect\` inside conditional statements
+    }
+});
+`,
+		},
+		{
+			code: `
+test("test", async () => {
+    if (something) {
+        await expect.poll(() => something).toBe(true);
+    }
+});
+`,
+			snapshot: `
+test("test", async () => {
+    if (something) {
+        await expect.poll(() => something).toBe(true);
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+              Avoid calling \`expect\` inside conditional statements
+    }
+});
+`,
+		},
+		{
+			code: `
 promise["catch"](() => {
     expect(true).toBe(false);
 });
